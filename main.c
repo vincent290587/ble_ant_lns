@@ -791,6 +791,15 @@ static void lns_c_evt_handler(ble_lns_c_t * p_lns_c, ble_lns_c_evt_t * p_lns_c_e
         {
             NRF_LOG_INFO("Latitude = %ld.\r\n", p_lns_c_evt->params.lns.lat);
 			NRF_LOG_INFO("Longitude = %ld.\r\n", p_lns_c_evt->params.lns.lon);
+			
+			uint32_t t_elev = p_lns_c_evt->params.lns.ele.p_data[0] << 0  |
+                     p_lns_c_evt->params.lns.ele.p_data[1] << 8  |
+                     p_lns_c_evt->params.lns.ele.p_data[2] << 16;
+			int32_t elev = (int32_t)t_elev;
+			NRF_LOG_INFO("Ele %ld\r\n", elev);
+			NRF_LOG_INFO("Ele %u %u %u\r\n",
+			p_lns_c_evt->params.lns.ele.p_data[0], p_lns_c_evt->params.lns.ele.p_data[1],
+			p_lns_c_evt->params.lns.ele.p_data[2]);
 
 			uint32_t sec_jour = p_lns_c_evt->params.lns.utc_time.seconds;
 			sec_jour += p_lns_c_evt->params.lns.utc_time.minutes * 60;
@@ -801,7 +810,7 @@ static void lns_c_evt_handler(ble_lns_c_t * p_lns_c, ble_lns_c_evt_t * p_lns_c_e
 			p_lns_c_evt->params.lns.utc_time.minutes,
 			p_lns_c_evt->params.lns.utc_time.hours);
 			
-			printf("$LOC,%lu,%ld,%ld\r\n", sec_jour, p_lns_c_evt->params.lns.lat, p_lns_c_evt->params.lns.lon);
+			printf("$LOC,%lu,%ld,%ld,%u\r\n", sec_jour, p_lns_c_evt->params.lns.lat, p_lns_c_evt->params.lns.lon,0);
 
             break;
         }

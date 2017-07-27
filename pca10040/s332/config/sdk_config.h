@@ -3892,7 +3892,7 @@
 // <e> ANT_BSC_LOG_ENABLED - Enables general logging in the module.
 //==========================================================
 #ifndef ANT_BSC_LOG_ENABLED
-#define ANT_BSC_LOG_ENABLED 1
+#define ANT_BSC_LOG_ENABLED 0
 #endif
 #if  ANT_BSC_LOG_ENABLED
 // <o> ANT_BSC_LOG_LEVEL  - Default Severity level
@@ -3929,7 +3929,7 @@
 // <e> ANT_BSC_COMBINED_PAGE_0_LOG_ENABLED - Enables logging of BSC Combined page 0 in the module.
 //==========================================================
 #ifndef ANT_BSC_COMBINED_PAGE_0_LOG_ENABLED
-#define ANT_BSC_COMBINED_PAGE_0_LOG_ENABLED 1
+#define ANT_BSC_COMBINED_PAGE_0_LOG_ENABLED 0
 #endif
 #if  ANT_BSC_COMBINED_PAGE_0_LOG_ENABLED
 // <o> ANT_BSC_COMBINED_PAGE_0_LOG_LEVEL  - Default Severity level
@@ -4205,7 +4205,7 @@
 // <e> ANT_HRM_LOG_ENABLED - Enables general logging in the module.
 //==========================================================
 #ifndef ANT_HRM_LOG_ENABLED
-#define ANT_HRM_LOG_ENABLED 1
+#define ANT_HRM_LOG_ENABLED 0
 #endif
 #if  ANT_HRM_LOG_ENABLED
 // <o> ANT_HRM_LOG_LEVEL  - Default Severity level
@@ -4242,7 +4242,7 @@
 // <e> ANT_HRM_PAGE_0_LOG_ENABLED - Enables logging of HRM page 0 in the module.
 //==========================================================
 #ifndef ANT_HRM_PAGE_0_LOG_ENABLED
-#define ANT_HRM_PAGE_0_LOG_ENABLED 1
+#define ANT_HRM_PAGE_0_LOG_ENABLED 0
 #endif
 #if  ANT_HRM_PAGE_0_LOG_ENABLED
 // <o> ANT_HRM_PAGE_0_LOG_LEVEL  - Default Severity level
@@ -4390,7 +4390,7 @@
 // <e> ANT_HRM_PAGE_4_LOG_ENABLED - Enables logging of HRM page 4 in the module.
 //==========================================================
 #ifndef ANT_HRM_PAGE_4_LOG_ENABLED
-#define ANT_HRM_PAGE_4_LOG_ENABLED 1
+#define ANT_HRM_PAGE_4_LOG_ENABLED 0
 #endif
 #if  ANT_HRM_PAGE_4_LOG_ENABLED
 // <o> ANT_HRM_PAGE_4_LOG_LEVEL  - Default Severity level
@@ -4444,7 +4444,7 @@
 #if  ANT_STACK_CONFIG_ENABLED
 // <o> ANT_CONFIG_TOTAL_CHANNELS_ALLOCATED - Allocated ANT channels 
 #ifndef ANT_CONFIG_TOTAL_CHANNELS_ALLOCATED
-#define ANT_CONFIG_TOTAL_CHANNELS_ALLOCATED 3
+#define ANT_CONFIG_TOTAL_CHANNELS_ALLOCATED 2
 #endif
 
 // <o> ANT_CONFIG_ENCRYPTED_CHANNELS - Encrypted ANT channels 
@@ -4469,7 +4469,7 @@
  
 
 #ifndef ANT_STATE_INDICATOR_ENABLED
-#define ANT_STATE_INDICATOR_ENABLED 1
+#define ANT_STATE_INDICATOR_ENABLED 0
 #endif
 
 // </h> 

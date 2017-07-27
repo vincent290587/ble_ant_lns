@@ -298,7 +298,7 @@ flash: $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex
 # Flash softdevice
 flash_softdevice:
 	@echo Flashing: s132_nrf52_3.0.0_softdevice.hex
-#	nrfjprog --program $(SDK_ROOT)/components/softdevice/s132/hex/s132_nrf52_3.0.0_softdevice.hex -f nrf52 --sectorerase 
+	nrfjprog --program $(SDK_ROOT)/components/softdevice/s332/hex/ANT_s332_nrf52_2.0.1.hex -f nrf52 --sectorerase 
 #	nrfjprog --reset -f nrf52
 
 erase:

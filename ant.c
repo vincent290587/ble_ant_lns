@@ -83,9 +83,6 @@
 #define BSC_DEVICE_NUMBER               0xB02B    /**< Device Number. */    
 #define BSC_DEVICE_TYPE                 0x79
 
-#define ANT_HRMRX_ANT_CHANNEL           0x00                                            /**< Default ANT Channel. */
-#define ANT_HRMRX_DEVICE_NUMBER         0x0D22                                            /**< Device Number. */
-
 #define ANTPLUS_NETWORK_NUMBER          0x00                                           /**< Network number. */
 
 #define UART_TX_BUF_SIZE 128                         /**< UART TX buffer size. */
@@ -132,14 +129,6 @@ ant_hrm_profile_t           m_ant_hrm;
 
 static uint8_t is_hrm_init = 0;
 static uint8_t is_cad_init = 0;
-
-
-
-#if (LEDS_NUMBER > 0)
-const uint8_t leds_list[LEDS_NUMBER] = LEDS_LIST;
-#else
-const uint8_t leds_list;
-#endif
 
 
 
