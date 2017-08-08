@@ -792,25 +792,33 @@ static void lns_c_evt_handler(ble_lns_c_t * p_lns_c, ble_lns_c_evt_t * p_lns_c_e
             NRF_LOG_INFO("Latitude = %ld.\r\n", p_lns_c_evt->params.lns.lat);
 			NRF_LOG_INFO("Longitude = %ld.\r\n", p_lns_c_evt->params.lns.lon);
 			
-			uint32_t t_elev = p_lns_c_evt->params.lns.ele.p_data[0] << 0  |
-                     p_lns_c_evt->params.lns.ele.p_data[1] << 8  |
-                     p_lns_c_evt->params.lns.ele.p_data[2] << 16;
-			int32_t elev = (int32_t)t_elev;
+			// smart technique to go from uint24 to int24 ;-)
+			uint32_t tmp_ele = (((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[0]) << 8)  |
+                     (((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[1]) << 16)  |
+                     (((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[2]) << 24);
+			int32_t elev = ((int32_t) (tmp_ele)) >> 8;   
+			
 			NRF_LOG_INFO("Ele %ld\r\n", elev);
-			NRF_LOG_INFO("Ele %u %u %u\r\n",
-			p_lns_c_evt->params.lns.ele.p_data[0], p_lns_c_evt->params.lns.ele.p_data[1],
-			p_lns_c_evt->params.lns.ele.p_data[2]);
-
+			
 			uint32_t sec_jour = p_lns_c_evt->params.lns.utc_time.seconds;
 			sec_jour += p_lns_c_evt->params.lns.utc_time.minutes * 60;
 			// summer time
 			sec_jour += (p_lns_c_evt->params.lns.utc_time.hours - 2) * 3600;
 			
-			NRF_LOG_INFO("Sec jour = %d %d %d\r\n", p_lns_c_evt->params.lns.utc_time.seconds,
-			p_lns_c_evt->params.lns.utc_time.minutes,
-			p_lns_c_evt->params.lns.utc_time.hours);
+			uint16_t speed = p_lns_c_evt->params.lns.inst_speed;
+			NRF_LOG_INFO("Speed = %u\r\n", speed);
 			
-			printf("$LOC,%lu,%ld,%ld,%u\r\n", sec_jour, p_lns_c_evt->params.lns.lat, p_lns_c_evt->params.lns.lon,0);
+			// limit to 70km/h
+			if (speed > 70 * 100 / 3.6) {
+				speed = 0;
+			}
+			
+			NRF_LOG_INFO("Sec jour = %d %d %d\r\n", p_lns_c_evt->params.lns.utc_time.hours,
+				p_lns_c_evt->params.lns.utc_time.minutes,
+				p_lns_c_evt->params.lns.utc_time.seconds);
+			
+			printf("$LOC,%lu,%ld,%ld,%ld,%u\r\n", sec_jour, 
+			    p_lns_c_evt->params.lns.lat, p_lns_c_evt->params.lns.lon, elev, speed);
 
             break;
         }

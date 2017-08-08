@@ -194,6 +194,7 @@ void ant_evt_bsc (ant_evt_t * p_ant_evt)
                     if (pusDeviceNumber) is_cad_init = 1;
                   }
                   ant_bsc_disp_evt_handler(&m_ant_bsc, p_ant_evt);
+				  NRF_LOG_INFO("HRM RX\r\n");
 									break;
 							case EVENT_RX_FAIL:
 									break;
@@ -229,6 +230,7 @@ void ant_evt_hrm (ant_evt_t * p_ant_evt)
                     if (pusDeviceNumber) is_hrm_init = 1;
                   }
                   ant_hrm_disp_evt_handler(&m_ant_hrm, p_ant_evt);
+				  NRF_LOG_INFO("HRM RX\r\n");
 									break;
 							case EVENT_RX_FAIL:
 									break;
@@ -271,9 +273,6 @@ void ant_evt_dispatch(ant_evt_t * p_ant_evt)
 				break;
 		}
 
-#if LEDS_NUMBER > 0
-    LEDS_INVERT(BSP_LED_2_MASK);
-#endif
 }
 
 
@@ -423,7 +422,7 @@ static void ant_hrm_evt_handler(ant_hrm_profile_t * p_profile, ant_hrm_evt_t eve
 							  rrInterval = (beat_time - prev_beat);
                 rrInterval_ms = rrInterval * 1000. / 1024.;
 							
-							  printf("$HRM,%u,%u\n\r",
+				printf("$HRM,%u,%u\n\r",
                       (unsigned int)computed_heart_rate,
                       (unsigned int)rrInterval_ms);
                 
