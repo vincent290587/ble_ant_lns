@@ -4196,6 +4196,10 @@
 #define ANT_CHANNEL_CONFIG_ENABLED 1
 #endif
 
+#ifndef ANT_GLASSES_LOG_ENABLED
+#define ANT_GLASSES_LOG_ENABLED    0
+#endif
+
 // <e> ANT_HRM_ENABLED - ant_hrm - Heart Rate Monitor Profile
 //==========================================================
 #ifndef ANT_HRM_ENABLED
@@ -4444,7 +4448,7 @@
 #if  ANT_STACK_CONFIG_ENABLED
 // <o> ANT_CONFIG_TOTAL_CHANNELS_ALLOCATED - Allocated ANT channels 
 #ifndef ANT_CONFIG_TOTAL_CHANNELS_ALLOCATED
-#define ANT_CONFIG_TOTAL_CHANNELS_ALLOCATED 2
+#define ANT_CONFIG_TOTAL_CHANNELS_ALLOCATED 3
 #endif
 
 // <o> ANT_CONFIG_ENCRYPTED_CHANNELS - Encrypted ANT channels 

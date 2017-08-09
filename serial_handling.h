@@ -11,5 +11,7 @@
 
 void uart_init(void);
 
+uint8_t *get_glasses_payload();
+
 
 #endif /* SERIAL_HANDLING_H_ */
