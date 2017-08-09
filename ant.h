@@ -6,8 +6,6 @@
 #define APP_TIMER_OP_QUEUE_SIZE     5                                   /**< Size of timer operation queues. */
 
 
-void uart_init(void);
-
 void ant_stack_init(void);
 
 int ant_setup_start(void);

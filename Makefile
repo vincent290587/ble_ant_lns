@@ -2,9 +2,9 @@ PROJECT_NAME     := ble_app_hrs_c_pca10040_s132
 TARGETS          := nrf52832_xxaa
 OUTPUT_DIRECTORY := _build
 
-DROPBOX := C:/Users/Vincent/Dropbox
-SDK_ROOT := ../../../../../..
-PROJ_DIR := ../../..
+DROPBOX  := C:/Users/Vincent/Dropbox
+SDK_ROOT := ../../..
+PROJ_DIR := .
 
 $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
   LINKER_SCRIPT  := ble_app_hrs_c_gcc_nrf52.ld
@@ -38,6 +38,7 @@ SRC_FILES += \
   $(SDK_ROOT)/components/libraries/bsp/bsp_btn_ble.c \
   $(SDK_ROOT)/components/libraries/bsp/bsp_nfc.c \
   $(SDK_ROOT)/components/ant/ant_channel_config/ant_channel_config.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_glasses/ant_glasses.c \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_hrm/ant_hrm.c \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_hrm/pages/ant_hrm_page_0.c \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_hrm/pages/ant_hrm_page_1.c \
@@ -143,7 +144,7 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/drivers_nrf/timer \
   $(SDK_ROOT)/components/libraries/util \
   $(SDK_ROOT)/components/drivers_nrf/pwm \
-  ../config \
+  $(PROJ_DIR)/pca10040/s332/config \
   $(SDK_ROOT)/components/libraries/csense_drv \
   $(SDK_ROOT)/components/libraries/csense \
   $(SDK_ROOT)/components/drivers_nrf/rng \
@@ -190,6 +191,7 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/softdevice/common/softdevice_handler \
   $(SDK_ROOT)/components/ble/ble_services/ble_lns_c \
   $(SDK_ROOT)/components/libraries/log/src \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_glasses \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_hrm \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_hrm/utils \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_hrm/simulator \
@@ -305,7 +307,6 @@ flash_softdevice:
 dfu:
 	nrfutil --verbose pkg generate --hw-version 52 --sd-req 0x8e --application-version 1 --application $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex --key-file $(SDK_ROOT)/vault/priv.pem s332_ble_ant_lns.zip
 	mv s332_ble_ant_lns.zip $(DROPBOX)
-
 
 erase:
 	nrfjprog --eraseall -f nrf52

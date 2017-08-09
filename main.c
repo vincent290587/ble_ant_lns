@@ -39,6 +39,7 @@
 #include "fstorage.h"
 #include "ble_conn_state.h"
 #include "nrf_ble_gatt.h"
+#include "serial_handling.h"
 
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"

@@ -55,7 +55,6 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 
-#define TAILLE_BUFFER 30
 
 #define GPIO_BUTTON                     30
 
@@ -84,10 +83,6 @@
 #define BSC_DEVICE_TYPE                 0x79
 
 #define ANTPLUS_NETWORK_NUMBER          0x00                                           /**< Network number. */
-
-#define UART_TX_BUF_SIZE 128                         /**< UART TX buffer size. */
-#define UART_RX_BUF_SIZE 64                           /**< UART RX buffer size. */
-
 
 
 APP_TIMER_DEF(m_sec_hrm);
@@ -131,30 +126,6 @@ static uint8_t is_hrm_init = 0;
 static uint8_t is_cad_init = 0;
 
 
-
-
-void uart_error_handle(app_uart_evt_t * p_event)
-{
-    uint8_t read_byte = 0;
-  
-    if (p_event->evt_type == APP_UART_DATA_READY)
-    {
-      // get data
-      while(app_uart_get(&read_byte) != NRF_SUCCESS) {;}
-      
-    }
-  
-    if (0) {
-      if (p_event->evt_type == APP_UART_COMMUNICATION_ERROR)
-      {
-        APP_ERROR_CHECK(p_event->data.error_communication);
-      }
-      else if (p_event->evt_type == APP_UART_FIFO_ERROR)
-      {
-        APP_ERROR_CHECK(p_event->data.error_code);
-      }
-    }
-}
 
 
 static void hrm_connect(void * p_context)
@@ -558,33 +529,6 @@ static void buttons_leds_init(void)
 
     APP_ERROR_CHECK(err_code);
 
-}
-
-
-
-/**@brief Function for initializing the UART.
- */
-void uart_init(void)
-{
-    uint32_t                     err_code;
-    const app_uart_comm_params_t comm_params =
-    {
-        RX_PIN_NUMBER,
-        TX_PIN_NUMBER,
-        RTS_PIN_NUMBER,
-        CTS_PIN_NUMBER,
-        APP_UART_FLOW_CONTROL_DISABLED,
-        false,
-        UART_BAUDRATE_BAUDRATE_Baud115200
-    };
-
-    APP_UART_FIFO_INIT(&comm_params,
-                       UART_RX_BUF_SIZE,
-                       UART_TX_BUF_SIZE,
-                       uart_error_handle,
-                       APP_IRQ_PRIORITY_LOW,
-                       err_code);
-    APP_ERROR_CHECK(err_code);
 }
 
 
