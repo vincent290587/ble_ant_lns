@@ -197,7 +197,6 @@ void ant_evt_bsc (ant_evt_t * p_ant_evt)
 			if (pusDeviceNumber) is_cad_init = 1;
 		}
 		ant_bsc_disp_evt_handler(&m_ant_bsc, p_ant_evt);
-		NRF_LOG_INFO("HRM RX\r\n");
 		break;
 	case EVENT_RX_FAIL:
 		break;
@@ -294,6 +293,8 @@ __STATIC_INLINE uint32_t calculate_speed(int32_t rev_cnt, int32_t evt_time)
     {
         m_speed_calc_data.acc_rev_cnt  += rev_cnt - m_speed_calc_data.prev_rev_cnt;
         m_speed_calc_data.acc_evt_time += evt_time - m_speed_calc_data.prev_evt_time;
+
+        NRF_LOG_INFO("acc_rev_cnt %lu prev_rev_cnt %lu\n", m_speed_calc_data.acc_rev_cnt, m_speed_calc_data.prev_rev_cnt);
 
         /* Process rollover */
         if (m_speed_calc_data.prev_rev_cnt > rev_cnt)
@@ -411,7 +412,7 @@ void ant_bsc_evt_handler(ant_bsc_profile_t * p_profile, ant_bsc_evt_t event)
 
 		_cadence = calculate_cadence(p_profile->BSC_PROFILE_cadence_rev_count, p_profile->BSC_PROFILE_cadence_event_time);
 
-		printf("$CAD,%lu,%lu\n\r", _cadence, _speed*100);
+		printf("$CAD,%lu,%lu\n\r", _cadence, _speed);
 
 		NRF_LOG_INFO("Evenement BSC speed=%lu cad=%lu\n", _speed, _cadence);
 
