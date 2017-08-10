@@ -76,7 +76,7 @@
 //#define SPEED_COEFFICIENT           (WHEEL_CIRCUMFERENCE * BSC_EVT_TIME_FACTOR * BSC_MS_TO_KPH_NUM) /**< Coefficient for speed value calculation */
 #define CADENCE_COEFFICIENT         (BSC_EVT_TIME_FACTOR * BSC_RPM_TIME_FACTOR)                     /**< Coefficient for cadence value calculation */
 #define SPEED_COEFFICIENT           (WHEEL_CIRCUMFERENCE * BSC_EVT_TIME_FACTOR * BSC_MS_TO_KPH_NUM \
-                                     / BSC_MS_TO_KPH_DEN / BSC_MM_TO_M_FACTOR)                      /**< Coefficient for speed value calculation */
+                                     / BSC_MS_TO_KPH_DEN)                      /**< Coefficient for speed value calculation */
 
 
 #define WILDCARD_TRANSMISSION_TYPE      0x00
@@ -308,7 +308,7 @@ __STATIC_INLINE uint32_t calculate_speed(int32_t rev_cnt, int32_t evt_time)
         m_speed_calc_data.prev_rev_cnt  = rev_cnt;
         m_speed_calc_data.prev_evt_time = evt_time;
 
-        computed_speed = 100*SPEED_COEFFICIENT *
+        computed_speed = SPEED_COEFFICIENT *
                          (m_speed_calc_data.acc_rev_cnt  - m_speed_calc_data.prev_acc_rev_cnt) /
                          (m_speed_calc_data.acc_evt_time - m_speed_calc_data.prev_acc_evt_time);
 
