@@ -73,12 +73,14 @@
 #define BSC_MS_TO_KPH_DEN           10                                                              /**< Denominator of [m/s] to [kph] ratio */
 #define BSC_MM_TO_M_FACTOR          1000                                                            /**< Unit factor [m/s] to [mm/s] */
 #define BSC_SPEED_UNIT_FACTOR       (BSC_MS_TO_KPH_DEN * BSC_MM_TO_M_FACTOR)                        /**< Speed unit factor */
-#define SPEED_COEFFICIENT           (WHEEL_CIRCUMFERENCE * BSC_EVT_TIME_FACTOR * BSC_MS_TO_KPH_NUM) /**< Coefficient for speed value calculation */
+//#define SPEED_COEFFICIENT           (WHEEL_CIRCUMFERENCE * BSC_EVT_TIME_FACTOR * BSC_MS_TO_KPH_NUM) /**< Coefficient for speed value calculation */
 #define CADENCE_COEFFICIENT         (BSC_EVT_TIME_FACTOR * BSC_RPM_TIME_FACTOR)                     /**< Coefficient for cadence value calculation */
+#define SPEED_COEFFICIENT           (WHEEL_CIRCUMFERENCE * BSC_EVT_TIME_FACTOR * BSC_MS_TO_KPH_NUM \
+                                     / BSC_MS_TO_KPH_DEN / BSC_MM_TO_M_FACTOR)                      /**< Coefficient for speed value calculation */
 
 
 #define WILDCARD_TRANSMISSION_TYPE      0x00
-
+#define ANTPLUS_NETWORK_NUMBER          0x00                                           /**< Network number. */
 
 #define HRM_CHANNEL_NUMBER              0x00  
 #define HRM_DEVICE_NUMBER               0x0D22    /**< Device Number. */
@@ -113,12 +115,6 @@ BSC_DISP_PROFILE_CONFIG_DEF(m_ant_bsc, ant_bsc_evt_handler);
 ant_bsc_profile_t m_ant_bsc;
 
 
-static int32_t accumulated_s_rev_cnt, previous_s_evt_cnt, prev_s_accumulated_rev_cnt,
-accumulated_s_evt_time, previous_s_evt_time, prev_s_accumulated_evt_time = 0;
-
-static int32_t accumulated_c_rev_cnt, previous_c_evt_cnt, prev_c_accumulated_rev_cnt,
-accumulated_c_evt_time, previous_c_evt_time, prev_c_accumulated_evt_time = 0;
-
 
 /** @snippet [ANT HRM RX Instance] */
 HRM_DISP_CHANNEL_CONFIG_DEF(m_ant_hrm,
@@ -135,6 +131,20 @@ ant_hrm_profile_t           m_ant_hrm;
 ant_glasses_profile_t       m_ant_glasses;
 const ant_channel_config_t  ant_tx_channel_config  = GLASSES_TX_CHANNEL_CONFIG(GLASSES_CHANNEL_NUMBER,
 		                            GLASSES_DEVICE_NUMBER, ANTPLUS_NETWORK_NUMBER);
+
+
+typedef struct
+{
+    int32_t acc_rev_cnt;
+    int32_t prev_rev_cnt;
+    int32_t prev_acc_rev_cnt;
+    int32_t acc_evt_time;
+    int32_t prev_evt_time;
+    int32_t prev_acc_evt_time;
+} bsc_disp_calc_data_t;
+
+static bsc_disp_calc_data_t m_speed_calc_data   = {0};
+static bsc_disp_calc_data_t m_cadence_calc_data = {0};
 
 
 static uint8_t is_hrm_init = 0;
@@ -197,7 +207,6 @@ void ant_evt_bsc (ant_evt_t * p_ant_evt)
 		break;
 	case EVENT_CHANNEL_CLOSED:
 		is_cad_init = 0;
-		//err_code = app_timer_stop(m_sec_bsc);
 		err_code = app_timer_start(m_sec_bsc, ANT_DELAY, NULL);
 		break;
 	}
@@ -236,7 +245,6 @@ void ant_evt_hrm (ant_evt_t * p_ant_evt)
 		break;
 	case EVENT_CHANNEL_CLOSED:
 		is_hrm_init = 0;
-		//err_code = app_timer_stop(m_sec_hrm);
 		err_code = app_timer_start(m_sec_hrm, ANT_DELAY, NULL);
 		break;
 	}
@@ -278,70 +286,70 @@ void ant_evt_dispatch(ant_evt_t * p_ant_evt)
 /**
  *
  */
-__STATIC_INLINE float calculate_speed(int32_t rev_cnt, int32_t evt_time)
+__STATIC_INLINE uint32_t calculate_speed(int32_t rev_cnt, int32_t evt_time)
 {
-	static float computed_speed   = 0;
+    static uint32_t computed_speed   = 0;
 
-	if (rev_cnt != previous_s_evt_cnt)
-	{
-		accumulated_s_rev_cnt  += rev_cnt - previous_s_evt_cnt;
-		accumulated_s_evt_time += evt_time - previous_s_evt_time;
+    if (rev_cnt != m_speed_calc_data.prev_rev_cnt)
+    {
+        m_speed_calc_data.acc_rev_cnt  += rev_cnt - m_speed_calc_data.prev_rev_cnt;
+        m_speed_calc_data.acc_evt_time += evt_time - m_speed_calc_data.prev_evt_time;
 
-		/* Process rollover */
-		if (previous_s_evt_cnt > rev_cnt)
-		{
-			accumulated_s_rev_cnt += UINT16_MAX + 1;
-		}
-		if (previous_s_evt_time > evt_time)
-		{
-			accumulated_s_evt_time += UINT16_MAX + 1;
-		}
+        /* Process rollover */
+        if (m_speed_calc_data.prev_rev_cnt > rev_cnt)
+        {
+            m_speed_calc_data.acc_rev_cnt += UINT16_MAX + 1;
+        }
+        if (m_speed_calc_data.prev_evt_time > evt_time)
+        {
+            m_speed_calc_data.acc_evt_time += UINT16_MAX + 1;
+        }
 
-		previous_s_evt_cnt  = rev_cnt;
-		previous_s_evt_time = evt_time;
+        m_speed_calc_data.prev_rev_cnt  = rev_cnt;
+        m_speed_calc_data.prev_evt_time = evt_time;
 
-		computed_speed   = SPEED_COEFFICIENT * (accumulated_s_rev_cnt  - prev_s_accumulated_rev_cnt);
-		computed_speed   /= (accumulated_s_evt_time - prev_s_accumulated_evt_time);
-		computed_speed   /= BSC_SPEED_UNIT_FACTOR;
+        computed_speed = 100*SPEED_COEFFICIENT *
+                         (m_speed_calc_data.acc_rev_cnt  - m_speed_calc_data.prev_acc_rev_cnt) /
+                         (m_speed_calc_data.acc_evt_time - m_speed_calc_data.prev_acc_evt_time);
 
-		prev_s_accumulated_rev_cnt  = accumulated_s_rev_cnt;
-		prev_s_accumulated_evt_time = accumulated_s_evt_time;
-	}
+        m_speed_calc_data.prev_acc_rev_cnt  = m_speed_calc_data.acc_rev_cnt;
+        m_speed_calc_data.prev_acc_evt_time = m_speed_calc_data.acc_evt_time;
+    }
 
-	return (float)computed_speed;
+    return (uint32_t) (computed_speed);
 }
 
 static uint32_t calculate_cadence(int32_t rev_cnt, int32_t evt_time)
 {
-	static uint32_t computed_cadence = 0;
+    static uint32_t computed_cadence = 0;
 
-	if (rev_cnt != previous_c_evt_cnt)
-	{
-		accumulated_c_rev_cnt  += rev_cnt - previous_c_evt_cnt;
-		accumulated_c_evt_time += evt_time - previous_c_evt_time;
+    if (rev_cnt != m_cadence_calc_data.prev_rev_cnt)
+    {
+        m_cadence_calc_data.acc_rev_cnt  += rev_cnt - m_cadence_calc_data.prev_rev_cnt;
+        m_cadence_calc_data.acc_evt_time += evt_time - m_cadence_calc_data.prev_evt_time;
 
-		/* Process rollover */
-		if (previous_c_evt_cnt > rev_cnt)
-		{
-			accumulated_c_rev_cnt += UINT16_MAX + 1;
-		}
-		if (previous_c_evt_time > evt_time)
-		{
-			accumulated_c_evt_time += UINT16_MAX + 1;
-		}
+        /* Process rollover */
+        if (m_cadence_calc_data.prev_rev_cnt > rev_cnt)
+        {
+            m_cadence_calc_data.acc_rev_cnt += UINT16_MAX + 1;
+        }
+        if (m_cadence_calc_data.prev_evt_time > evt_time)
+        {
+            m_cadence_calc_data.acc_evt_time += UINT16_MAX + 1;
+        }
 
-		previous_c_evt_cnt  = rev_cnt;
-		previous_c_evt_time = evt_time;
+        m_cadence_calc_data.prev_rev_cnt  = rev_cnt;
+        m_cadence_calc_data.prev_evt_time = evt_time;
 
-		computed_cadence = CADENCE_COEFFICIENT *
-				(accumulated_c_rev_cnt  - prev_c_accumulated_rev_cnt) /
-				(accumulated_c_evt_time - prev_c_accumulated_evt_time);
+        computed_cadence = CADENCE_COEFFICIENT *
+                        (m_cadence_calc_data.acc_rev_cnt  - m_cadence_calc_data.prev_acc_rev_cnt) /
+                        (m_cadence_calc_data.acc_evt_time - m_cadence_calc_data.prev_acc_evt_time);
 
-		prev_c_accumulated_rev_cnt  = accumulated_c_rev_cnt;
-		prev_c_accumulated_evt_time = accumulated_c_evt_time;
-	}
+        m_cadence_calc_data.prev_acc_rev_cnt  = m_cadence_calc_data.acc_rev_cnt;
+        m_cadence_calc_data.prev_acc_evt_time = m_cadence_calc_data.acc_evt_time;
+    }
 
-	return (uint32_t) computed_cadence;
+    return (uint32_t) computed_cadence;
 }
 
 /**
@@ -377,8 +385,8 @@ void ant_evt_glasses (ant_evt_t * p_ant_evt)
  */
 void ant_bsc_evt_handler(ant_bsc_profile_t * p_profile, ant_bsc_evt_t event)
 {
-	unsigned int _cadence;
-	float _speed;
+	uint32_t _cadence;
+	uint32_t _speed;
 
 
 	switch (event)
@@ -403,9 +411,9 @@ void ant_bsc_evt_handler(ant_bsc_profile_t * p_profile, ant_bsc_evt_t event)
 
 		_cadence = calculate_cadence(p_profile->BSC_PROFILE_cadence_rev_count, p_profile->BSC_PROFILE_cadence_event_time);
 
-		printf("$CAD,%u,%u\n\r", (unsigned int)_cadence, (unsigned int)(100.*_speed));
+		printf("$CAD,%lu,%lu\n\r", _cadence, _speed*100);
 
-		NRF_LOG_INFO( "Evenement BSC speed=%u cad=%u\n", (unsigned int)_cadence, (unsigned int)(100.*_speed));
+		NRF_LOG_INFO("Evenement BSC speed=%lu cad=%lu\n", _speed, _cadence);
 
 		break;
 
