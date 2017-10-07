@@ -1,15 +1,15 @@
 # ble_ant_lns
 
-Sample application using the ble_lns_c library on the nRF52832
+Sample application using the ble_lns_c library on the nRF52832/nRF52840
 
 ## Environment
 
-You will need softdevice s332 V2.0.1 and nRF SDK 12.2
+You will need softdevice s332 V5 with nRF SDK V14
 
 ## Compilation
 
-cd pca10040/s332/armgcc
-make (or make flash)
+cd pca100XX/s332/armgcc
+make && make flash
 
 ## Use case
 
