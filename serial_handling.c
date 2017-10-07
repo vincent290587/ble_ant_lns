@@ -10,19 +10,18 @@
 #include "nrf.h"
 #include "app_error.h"
 #include "app_scheduler.h"
-#include "app_timer_appsh.h"
 #include "app_uart.h"
 #include "nrf_soc.h"
 #include "bsp.h"
 #include "bsp_btn_ble.h"
-#include "softdevice_handler.h"
 #include "nrf_delay.h"
 
 #include "nrf_drv_wdt.h"
 
-#define NRF_LOG_MODULE_NAME "SH"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
+#include "nrf_log_default_backends.h"
+
 #include "serial_handling.h"
 
 
