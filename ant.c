@@ -132,7 +132,7 @@ const ant_channel_config_t  ant_tx_channel_config  = GLASSES_TX_CHANNEL_CONFIG(G
 		                            GLASSES_DEVICE_NUMBER, ANTPLUS_NETWORK_NUMBER);
 
 NRF_SDH_ANT_OBSERVER(m_bsc_ant_observer, ANT_BSC_ANT_OBSERVER_PRIO,
-                     ant_bsc_disp_evt_handler, &m_ant_bsc);
+                     ant_bsc_disp_evt_handler, NULL);
 
 typedef struct
 {
@@ -371,6 +371,7 @@ void ant_evt_glasses (ant_evt_t * p_ant_evt)
 	switch (p_ant_evt->event)
 	{
 	case EVENT_TX:
+		NRF_LOG_DEBUG("Sending glasses payload");
 		ant_glasses_tx_evt_handle(&m_ant_glasses, p_ant_evt, glasses_payload);
 		break;
 	case EVENT_RX:

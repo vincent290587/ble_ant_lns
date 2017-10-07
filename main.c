@@ -29,8 +29,6 @@
 #include "app_util.h"
 #include "app_error.h"
 #include "peer_manager.h"
-#include "ble_hrs_c.h"
-#include "ble_bas_c.h"
 #include "app_util.h"
 #include "app_timer.h"
 #include "bsp_btn_ble.h"
@@ -52,10 +50,6 @@
 
 #define APP_BLE_OBSERVER_PRIO       1                                   /**< Application's BLE observer priority. You shouldn't need to modify this value. */
 #define APP_SOC_OBSERVER_PRIO       1                                   /**< Applications' SoC observer priority. You shoulnd't need to modify this value. */
-
-
-#define CENTRAL_LINK_COUNT          1                                   /**< Number of central links used by the application. When changing this number remember to adjust the RAM settings*/
-#define PERIPHERAL_LINK_COUNT       0                                   /**< Number of peripheral links used by the application. When changing this number remember to adjust the RAM settings*/
 
 
 #define SEC_PARAM_BOND              1                                   /**< Perform bonding. */
@@ -97,11 +91,12 @@ typedef struct
     uint16_t   data_len;    /**< Length of data. */
 } data_t;
 
+
+BLE_LNS_C_DEF(m_ble_lns_c);                                             /**< Structure used to identify the heart rate client module. */
+BLE_BAS_C_DEF(m_ble_bas_c);                                             /**< Structure used to identify the Battery Service client module. */
 NRF_BLE_GATT_DEF(m_gatt);                                           /**< GATT module instance. */
 BLE_DB_DISCOVERY_DEF(m_db_disc);                                    /**< DB discovery module instance. */
 
-static ble_lns_c_t           m_ble_lns_c;                  /**< Structure used to identify the heart rate client module. */
-static ble_bas_c_t           m_ble_bas_c;                  /**< Structure used to identify the Battery Service client module. */
 static ble_gap_scan_params_t m_scan_param;                 /**< Scan parameters requested for scanning and connection. */
 //static uint16_t              m_conn_handle;                /**< Current connection handle. */
 static bool                  m_whitelist_disabled;         /**< True if whitelist has been temporarily disabled. */
@@ -676,8 +671,8 @@ static void soc_evt_handler(uint32_t evt_id, void * p_context)
 //    nrf_ble_gatt_on_ble_evt(&m_gatt, p_ble_evt);
 //    on_ble_evt(p_ble_evt);
 //}
-//
-//
+
+
 ///**@brief Function for dispatching a system event to interested modules.
 // *
 // * @details This function is called from the System event interrupt handler after a system
