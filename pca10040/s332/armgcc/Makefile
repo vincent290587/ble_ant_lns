@@ -42,6 +42,7 @@ SRC_FILES += \
   $(SDK_ROOT)/components/drivers_nrf/common/nrf_drv_common.c \
   $(SDK_ROOT)/components/drivers_nrf/gpiote/nrf_drv_gpiote.c \
   $(SDK_ROOT)/components/drivers_nrf/uart/nrf_drv_uart.c \
+  $(SDK_ROOT)/components/drivers_nrf/twi_master/nrf_drv_twi.c \
   $(SDK_ROOT)/components/libraries/uart/retarget.c \
   $(SDK_ROOT)/components/libraries/fifo/app_fifo.c \
   $(SDK_ROOT)/components/libraries/uart/app_uart_fifo.c \
@@ -239,12 +240,13 @@ OPT = -O3 -g3
 # C flags common to all targets
 CFLAGS += $(OPT)
 #CFLAGS += -DNRF_LOG_ENABLED=0
-#CFLAGS += -DDEBUG
+CFLAGS += -DDEBUG
 CFLAGS += -DNRF52
 CFLAGS += -DNRF52832_XXAA
 CFLAGS += -DNRF52_PAN_36
 CFLAGS += -DNRF52_PAN_64
 CFLAGS += -DSOFTDEVICE_PRESENT
+CFLAGS += -DCONFIG_NFCT_PINS_AS_GPIOS
 CFLAGS += -DBOARD_STRAVA5
 CFLAGS += -DNRF52832
 CFLAGS += -DNRF52_PAN_12
@@ -252,7 +254,7 @@ CFLAGS += -DNRF52_PAN_58
 CFLAGS += -DNRF52_PAN_54
 CFLAGS += -DNRF52_PAN_31
 CFLAGS += -DNRF52_PAN_51
-CFLAGS += -D__HEAP_SIZE=0
+CFLAGS += -D__HEAP_SIZE=512
 CFLAGS += -DBLE_STACK_SUPPORT_REQD
 CFLAGS += -DANT_STACK_SUPPORT_REQD
 CFLAGS += -DNRF52_PAN_15
@@ -289,7 +291,7 @@ ASMFLAGS += -DNRF52_PAN_58
 ASMFLAGS += -DNRF52_PAN_54
 ASMFLAGS += -DNRF52_PAN_31
 ASMFLAGS += -DNRF52_PAN_51
-ASMFLAGS += -D__HEAP_SIZE=0
+ASMFLAGS += -D__HEAP_SIZE=512
 ASMFLAGS += -DBLE_STACK_SUPPORT_REQD -DANT_STACK_SUPPORT_REQD
 ASMFLAGS += -DNRF52_PAN_15
 ASMFLAGS += -DNRF_SD_BLE_API_VERSION=5

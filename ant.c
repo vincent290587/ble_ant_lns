@@ -131,8 +131,10 @@ ant_glasses_profile_t       m_ant_glasses;
 const ant_channel_config_t  ant_tx_channel_config  = GLASSES_TX_CHANNEL_CONFIG(GLASSES_CHANNEL_NUMBER,
 		                            GLASSES_DEVICE_NUMBER, ANTPLUS_NETWORK_NUMBER);
 
-NRF_SDH_ANT_OBSERVER(m_bsc_ant_observer, ANT_BSC_ANT_OBSERVER_PRIO,
-                     ant_bsc_disp_evt_handler, NULL);
+//NRF_SDH_ANT_OBSERVER(m_bsc_ant_observer, ANT_BSC_ANT_OBSERVER_PRIO,
+//                     ant_bsc_disp_evt_handler, NULL);
+//NRF_SDH_ANT_OBSERVER(m_hrm_ant_observer, ANT_BSC_ANT_OBSERVER_PRIO,
+//                     ant_hrm_disp_evt_handler, NULL);
 
 typedef struct
 {
@@ -203,6 +205,7 @@ void ant_evt_bsc (ant_evt_t * p_ant_evt)
 	            memset(&m_cadence_calc_data, 0, sizeof(m_cadence_calc_data));
 			}
 		}
+		ant_bsc_disp_evt_handler(p_ant_evt, &m_ant_bsc);
 		break;
 	case EVENT_RX_FAIL:
 		break;
@@ -242,6 +245,7 @@ void ant_evt_hrm (ant_evt_t * p_ant_evt)
 			if (pusDeviceNumber) is_hrm_init = 1;
 		}
 		NRF_LOG_INFO("HRM RX\r\n");
+		ant_hrm_disp_evt_handler(p_ant_evt, &m_ant_hrm);
 		break;
 	case EVENT_RX_FAIL:
 		break;

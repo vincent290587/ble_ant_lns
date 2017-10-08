@@ -779,7 +779,7 @@ static void lns_c_evt_handler(ble_lns_c_t * p_lns_c, ble_lns_c_evt_t * p_lns_c_e
             err_code = ble_lns_c_pos_notif_enable(p_lns_c);
             APP_ERROR_CHECK(err_code);
 
-            NRF_LOG_DEBUG("LNS service discovered.\r\n");
+            NRF_LOG_DEBUG("LNS service discovered.");
             break;
 
         case BLE_LNS_C_EVT_LNS_NOTIFICATION:
@@ -847,12 +847,12 @@ static void bas_c_evt_handler(ble_bas_c_t * p_bas_c, ble_bas_c_evt_t * p_bas_c_e
             }
 
             // Batttery service discovered. Enable notification of Battery Level.
-            NRF_LOG_DEBUG("Battery Service discovered. Reading battery level.\r\n");
+            NRF_LOG_DEBUG("Battery Service discovered. Reading battery level.");
 
             err_code = ble_bas_c_bl_read(p_bas_c);
             APP_ERROR_CHECK(err_code);
 
-            NRF_LOG_DEBUG("Enabling Battery Level Notification.\r\n");
+            NRF_LOG_DEBUG("Enabling Battery Level Notification.");
             err_code = ble_bas_c_bl_notif_enable(p_bas_c);
             APP_ERROR_CHECK(err_code);
 
@@ -1128,7 +1128,7 @@ static void gatt_init(void)
 }
 
 
-int main(void)
+void ble_ant_init(void)
 {
 	ret_code_t ret;
 
@@ -1159,14 +1159,9 @@ int main(void)
 
     // Start scanning for peripherals and initiate connection
     // with devices that advertise LNS UUID.
-    NRF_LOG_INFO("LNS central\r\n");
+    NRF_LOG_INFO("LNS central");
     scan_start();
 
-    for (;;)
-    {
-    	NRF_LOG_FLUSH();
-    	nrf_pwr_mgmt_run();
-    }
 }
 
 

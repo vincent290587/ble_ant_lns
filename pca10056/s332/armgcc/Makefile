@@ -42,6 +42,7 @@ SRC_FILES += \
   $(SDK_ROOT)/components/drivers_nrf/common/nrf_drv_common.c \
   $(SDK_ROOT)/components/drivers_nrf/gpiote/nrf_drv_gpiote.c \
   $(SDK_ROOT)/components/drivers_nrf/uart/nrf_drv_uart.c \
+  $(SDK_ROOT)/components/drivers_nrf/twi_master/nrf_drv_twi.c \
   $(SDK_ROOT)/components/libraries/uart/retarget.c \
   $(SDK_ROOT)/components/libraries/fifo/app_fifo.c \
   $(SDK_ROOT)/components/libraries/uart/app_uart_fifo.c \
@@ -239,11 +240,12 @@ OPT = -O3 -g3
 # C flags common to all targets
 CFLAGS += $(OPT)
 #CFLAGS += -DNRF_LOG_ENABLED=0
-#CFLAGS += -DDEBUG
+CFLAGS += -DDEBUG
 CFLAGS += -DNRF52840_XXAA
 CFLAGS += -DNRF52_PAN_36
 CFLAGS += -DNRF52_PAN_64
 CFLAGS += -DSOFTDEVICE_PRESENT
+CFLAGS += -DCONFIG_NFCT_PINS_AS_GPIOS
 CFLAGS += -DBOARD_STRAVA5
 CFLAGS += -DNRF52840
 CFLAGS += -DNRF52_PAN_12

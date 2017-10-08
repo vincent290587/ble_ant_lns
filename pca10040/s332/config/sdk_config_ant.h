@@ -558,36 +558,6 @@
 #define ANT_KEY_MANAGER_ENABLED 1
 #endif
 
-// <e> ANT_STACK_CONFIG_ENABLED - ant_stack_config - Common ANT stack configuration
-//==========================================================
-#ifndef ANT_STACK_CONFIG_ENABLED
-#define ANT_STACK_CONFIG_ENABLED 1
-#endif
-
-
-#if  ANT_STACK_CONFIG_ENABLED
-// <o> ANT_CONFIG_TOTAL_CHANNELS_ALLOCATED - Allocated ANT channels 
-#ifndef ANT_CONFIG_TOTAL_CHANNELS_ALLOCATED
-#define ANT_CONFIG_TOTAL_CHANNELS_ALLOCATED 3
-#endif
-
-// <o> ANT_CONFIG_ENCRYPTED_CHANNELS - Encrypted ANT channels 
-#ifndef ANT_CONFIG_ENCRYPTED_CHANNELS
-#define ANT_CONFIG_ENCRYPTED_CHANNELS 0
-#endif
-
-// <o> ANT_CONFIG_EVENT_QUEUE_SIZE - Event queue size 
-#ifndef ANT_CONFIG_EVENT_QUEUE_SIZE
-#define ANT_CONFIG_EVENT_QUEUE_SIZE 32
-#endif
-
-// <o> ANT_CONFIG_BURST_QUEUE_SIZE - ANT burst queue size 
-#ifndef ANT_CONFIG_BURST_QUEUE_SIZE
-#define ANT_CONFIG_BURST_QUEUE_SIZE 128
-#endif
-
-#endif //ANT_STACK_CONFIG_ENABLED
-// </e>
 
 // <q> ANT_STATE_INDICATOR_ENABLED  - ant_state_indicator - ANT state indicator using BSP
  
@@ -613,7 +583,7 @@
 //==========================================================
 // <o> NRF_SDH_ANT_TOTAL_CHANNELS_ALLOCATED - Allocated ANT channels. 
 #ifndef NRF_SDH_ANT_TOTAL_CHANNELS_ALLOCATED
-#define NRF_SDH_ANT_TOTAL_CHANNELS_ALLOCATED 1
+#define NRF_SDH_ANT_TOTAL_CHANNELS_ALLOCATED 3
 #endif
 
 // <o> NRF_SDH_ANT_ENCRYPTED_CHANNELS - Encrypted ANT channels. 
