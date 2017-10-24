@@ -87,7 +87,7 @@ int main(void)
 
 	i2c_init();
 
-	stc.init(5, STC3100_MODE_HIGHRES);
+	stc.init(10, STC3100_MODE_HIGHRES);
 
 	uint32_t err_code;
 
@@ -101,7 +101,8 @@ int main(void)
     {
     	NRF_LOG_FLUSH();
     	app_sched_execute();
-    	nrf_pwr_mgmt_run();
+
+    	sd_app_evt_wait();
 
     	if (job_to_do) {
     		job_to_do = false;

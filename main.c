@@ -793,7 +793,14 @@ static void lns_c_evt_handler(ble_lns_c_t * p_lns_c, ble_lns_c_evt_t * p_lns_c_e
                      (((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[2]) << 24);
 			int32_t elev = ((int32_t) (tmp_ele)) >> 8;   
 			
-			NRF_LOG_INFO("Ele %ld\r\n", elev);
+			NRF_LOG_INFO("Ele %ld - %u %u %u %u\r\n", elev,
+					p_lns_c_evt->params.lns.ele.p_data[0],
+					p_lns_c_evt->params.lns.ele.p_data[1],
+					p_lns_c_evt->params.lns.ele.p_data[2],
+					p_lns_c_evt->params.lns.ele.size);
+			if (elev == -65264) {
+				elev = 0;
+			}
 			
 			uint32_t sec_jour = p_lns_c_evt->params.lns.utc_time.seconds;
 			sec_jour += p_lns_c_evt->params.lns.utc_time.minutes * 60;
@@ -1140,7 +1147,7 @@ void ble_ant_init(void)
     APP_ERROR_CHECK(ret);
 
 	ant_timers_init();
-	
+
 	pwr_mgmt_init();
 
     ble_stack_init();
