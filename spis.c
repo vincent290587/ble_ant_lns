@@ -21,9 +21,8 @@
 #define SPIS_INSTANCE 1 /**< SPIS instance index. */
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
 
-#define SPIS_BUFFER_SIZE     64
 
-static uint8_t       m_tx_buf[SPIS_BUFFER_SIZE];           /**< TX buffer. */
+uint8_t              m_tx_buf[SPIS_BUFFER_SIZE];           /**< TX buffer. */
 static uint8_t       m_rx_buf[SPIS_BUFFER_SIZE];           /**< RX buffer. */
 
 static volatile bool spis_xfer_done; /**< Flag used to indicate that SPIS instance completed the transfer. */
@@ -52,7 +51,7 @@ void spis_init(void) {
 	// (when the CPU is in sleep mode).
 	NRF_POWER->TASKS_CONSTLAT = 1;
 
-	NRF_LOG_INFO("SPIS example");
+	NRF_LOG_INFO("SPIS init");
 
 	nrf_drv_spis_config_t spis_config = NRF_DRV_SPIS_DEFAULT_CONFIG;
 	spis_config.csn_pin               = SPIS_MISO_PIN;
@@ -81,7 +80,10 @@ void spis_tasks(void) {
 
 		// reset transfer
 		memset(m_rx_buf, 0, sizeof(m_rx_buf));
+		memset(m_tx_buf, 0, sizeof(m_tx_buf));
+
 		spis_xfer_done = false;
+
 		APP_ERROR_CHECK(nrf_drv_spis_buffers_set(&spis, m_tx_buf, SPIS_BUFFER_SIZE, m_rx_buf, SPIS_BUFFER_SIZE));
 
 		// parse info and use it

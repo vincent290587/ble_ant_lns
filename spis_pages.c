@@ -5,8 +5,44 @@
  *      Author: Vincent
  */
 
+#include "helper.h"
+#include "spis.h"
 #include "spis_pages.h"
 
+
+/**
+ *
+ * @param info
+ */
+void spis_encode_lns(sLnsInfo* info) {
+	m_tx_buf[TX_BUFF_FLAGS_POS] |= 1 << TX_BUFF_FLAGS_LNS_BIT;
+
+	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START + 0, info->lat);
+	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START + 4, info->lon);
+	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START + 8, (uint32_t) info->ele);
+}
+
+/**
+ *
+ * @param info
+ */
+void spis_encode_hrm(sHrmInfo* info) {
+	m_tx_buf[TX_BUFF_FLAGS_POS] |= 1 << TX_BUFF_FLAGS_HRM_BIT;
+
+	m_tx_buf[TX_BUFF_HRM_START] = info->bpm;
+	encode_uint16 (m_tx_buf + TX_BUFF_HRM_START + 1, info->rr);
+}
+
+/**
+ *
+ * @param info
+ */
+void spis_encode_bsc(sBscInfo* info) {
+	m_tx_buf[TX_BUFF_FLAGS_POS] |= 1 << TX_BUFF_FLAGS_BSC_BIT;
+
+	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START + 0, info->cadence);
+	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START + 4, info->speed);
+}
 
 /**
  *

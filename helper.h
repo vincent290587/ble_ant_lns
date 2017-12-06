@@ -162,6 +162,33 @@ float regFen(float val_, float b1_i, float b1_f, float b2_i, float b2_f);
  */
 float regFenLim(float val_, float b1_i, float b1_f, float b2_i, float b2_f);
 
+/**
+ *
+ * @param dest
+ * @param input
+ */
+void encode_uint16 (uint8_t* dest, uint32_t input);
+
+/**
+ *
+ * @param dest
+ * @param input
+ */
+void encode_uint32 (uint8_t* dest, uint32_t input);
+
+/**
+ *
+ * @param dest
+ * @return
+ */
+uint16_t decode_uint16 (uint8_t* dest);
+
+/**
+ *
+ * @param dest
+ * @return
+ */
+uint32_t decode_uint32 (uint8_t* dest);
 
 #ifdef __cplusplus
 }

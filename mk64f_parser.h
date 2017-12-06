@@ -15,8 +15,10 @@ typedef enum {
 	eSpiRxPage1    = 1U,
 } eSpiRxPages;
 
+////////////// RX SPIS
+
 typedef struct {
-	uint8_t weakness;
+	uint8_t weak;
 	uint8_t rgb[3];
 	uint8_t on_time;
 } sNeopixelOrders;
@@ -26,14 +28,33 @@ typedef struct {
 	uint16_t millieme_avance;
 } sGlassesOrders;
 
+////////////// TX SPIS
+
+typedef struct {
+	uint8_t bpm;
+	uint16_t rr;
+} sHrmInfo;
+
+typedef struct {
+	uint32_t cadence;
+	uint32_t speed;
+} sBscInfo;
+
+typedef struct {
+	uint32_t lat;
+	uint32_t lon;
+	int32_t ele;
+} sLnsInfo;
+
+////////////// RX PAGES
+
 typedef struct {
 	sNeopixelOrders neo_info;
 	sGlassesOrders  glasses_info;
 } sSpisRxInfoPage0;
 
 typedef struct {
-	sNeopixelOrders neo_info;
-	sGlassesOrders  glasses_info;
+	uint8_t dummy;
 } sSpisRxInfoPage1;
 
 typedef union {
