@@ -31,8 +31,14 @@ typedef struct {
 	sGlassesOrders  glasses_info;
 } sSpisRxInfoPage0;
 
+typedef struct {
+	sNeopixelOrders neo_info;
+	sGlassesOrders  glasses_info;
+} sSpisRxInfoPage1;
+
 typedef union {
 	sSpisRxInfoPage0 page0;
+	sSpisRxInfoPage1 page1;
 } sSpisRxInfo;
 
 #ifdef __cplusplus
