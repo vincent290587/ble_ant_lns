@@ -400,7 +400,6 @@ void ant_bsc_evt_handler(ant_bsc_profile_t * p_profile, ant_bsc_evt_t event)
 	uint32_t _cadence;
 	uint32_t _speed;
 
-
 	switch (event)
 	{
 	case ANT_BSC_PAGE_0_UPDATED:

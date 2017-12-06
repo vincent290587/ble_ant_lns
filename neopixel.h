@@ -10,6 +10,14 @@
 
 #include <stdint.h>
 
+#define WS_BLACK   0,0,0
+#define WS_RED     0xFF,0,0
+#define WS_GREEN   0,0xFF,0
+#define WS_BLUE    0,0,0xFF
+#define WS_YELLOW  0xFF,0xFF,0
+#define WS_ORANGE  0xFF,0x99,0x33
+#define WS_VIOLET  0xFF,0x33,0xFF
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -2,14 +2,13 @@ PROJECT_NAME     := ble_app_lns_c_pca10040_s132
 TARGETS          := nrf52832_xxaa
 OUTPUT_DIRECTORY := _build
 
-DROPBOX := C:/Users/Vincent/Dropbox
-SDK_ROOT := E:/Nordic/nRF5_SDK_14.1
+SDK_ROOT := $(DISKE)/Nordic/nRF5_SDK_14.2
 PROJ_DIR := ../../..
 
 $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
   LINKER_SCRIPT  := ble_app_lns_c_gcc_nrf52.ld
   
-include $(PROJ_DIR)/makefile.files
+include $(PROJ_DIR)/Makefile.files
 
 # Source files common to all targets
 SRC_FILES += \
@@ -131,7 +130,7 @@ flash_softdevice:
 #	nrfjprog --reset -f nrf52
 
 dfu:
-	nrfutil --verbose pkg generate --hw-version 52 --sd-req 0x8e --application-version 1 --application $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex --key-file $(SDK_ROOT)/vault/priv.pem s332_ble_ant_lns.zip
+	nrfutil --verbose pkg generate --hw-version 52 --sd-req 0x8e --application-version 1 --application $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex --key-file $(SDK_ROOT)/../../vault/priv.pem s332_ble_ant_lns.zip
 	mv s332_ble_ant_lns.zip $(DROPBOX)
 
 

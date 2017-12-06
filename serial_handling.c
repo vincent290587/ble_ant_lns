@@ -40,6 +40,7 @@ static uint16_t marque_byte = 0;
 
 
 void uart_error_handle(app_uart_evt_t * p_event);
+
 uint8_t encode (uint8_t byte);
 void set_glasses_buffer ();
 

@@ -9,6 +9,7 @@
 #define DRIVERS_I2C_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
