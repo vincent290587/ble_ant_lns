@@ -11,35 +11,71 @@
 #include <stdint.h>
 
 typedef enum {
+	eSpiRxPageInv  = 0xFF,
 	eSpiRxPage0    = 0U,
 	eSpiRxPage1    = 1U,
-} eSpiRxPages;
+} eSpisRxPages;
+
+////////////// RX SPIS
 
 typedef struct {
-	uint8_t weakness;
-	uint8_t rgb[3];
+	uint8_t event_type;
 	uint8_t on_time;
+	uint8_t rgb[3];
 } sNeopixelOrders;
 
 typedef struct {
 	uint8_t  led;
-	uint16_t millieme_avance;
+	uint8_t  av_ent;
+	uint8_t  av_dec;
 } sGlassesOrders;
 
 typedef struct {
-	sNeopixelOrders neo_info;
+	uint8_t  soc;
+	uint16_t mv;
+} sBatteryOrders;
+
+////////////// TX SPIS
+
+typedef struct {
+	uint8_t bpm;
+	uint16_t rr;
+} sHrmInfo;
+
+typedef struct {
+	uint32_t cadence;
+	uint32_t speed;
+} sBscInfo;
+
+typedef struct {
+	uint32_t lat;
+	uint32_t lon;
+	int32_t ele;
+} sLnsInfo;
+
+////////////// RX PAGES
+
+typedef struct {
+	sBatteryOrders  batt_info;
 	sGlassesOrders  glasses_info;
+	sNeopixelOrders neo_info;
 } sSpisRxInfoPage0;
 
 typedef struct {
-	sNeopixelOrders neo_info;
-	sGlassesOrders  glasses_info;
+	uint8_t dummy;
 } sSpisRxInfoPage1;
 
 typedef union {
 	sSpisRxInfoPage0 page0;
 	sSpisRxInfoPage1 page1;
+} sSpisRxPages;
+
+typedef struct {
+	eSpisRxPages page_id;
+	sSpisRxPages pages;
 } sSpisRxInfo;
+
+
 
 #ifdef __cplusplus
 extern "C" {

@@ -50,7 +50,8 @@
 #include "ant_glasses.h"
 #include "ant_interface.h"
 
-#include "serial_handling.h"
+#include "spis_pages.h"
+#include "glasses.h"
 
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
@@ -152,8 +153,6 @@ static bsc_disp_calc_data_t m_cadence_calc_data = {0};
 
 static uint8_t is_hrm_init = 0;
 static uint8_t is_cad_init = 0;
-
-
 
 
 /**
@@ -370,13 +369,11 @@ void ant_evt_glasses (ant_evt_t * p_ant_evt)
 {
 	uint32_t err_code = NRF_SUCCESS;
 
-	uint8_t *glasses_payload = get_glasses_payload();
-
 	switch (p_ant_evt->event)
 	{
 	case EVENT_TX:
 		NRF_LOG_DEBUG("Sending glasses payload");
-		ant_glasses_tx_evt_handle(&m_ant_glasses, p_ant_evt, glasses_payload);
+		ant_glasses_tx_evt_handle(&m_ant_glasses, p_ant_evt, m_glasses_payload);
 		break;
 	case EVENT_RX:
 		break;
@@ -397,9 +394,6 @@ void ant_evt_glasses (ant_evt_t * p_ant_evt)
  */
 void ant_bsc_evt_handler(ant_bsc_profile_t * p_profile, ant_bsc_evt_t event)
 {
-	uint32_t _cadence;
-	uint32_t _speed;
-
 	switch (event)
 	{
 	case ANT_BSC_PAGE_0_UPDATED:
@@ -417,15 +411,18 @@ void ant_bsc_evt_handler(ant_bsc_profile_t * p_profile, ant_bsc_evt_t event)
 		break;
 
 	case ANT_BSC_COMB_PAGE_0_UPDATED:
+	{
+		sBscInfo bsc_info;
+		bsc_info.speed = calculate_speed(p_profile->BSC_PROFILE_speed_rev_count, p_profile->BSC_PROFILE_speed_event_time);
+		bsc_info.cadence = calculate_cadence(p_profile->BSC_PROFILE_cadence_rev_count, p_profile->BSC_PROFILE_cadence_event_time);
 
-		_speed = calculate_speed(p_profile->BSC_PROFILE_speed_rev_count, p_profile->BSC_PROFILE_speed_event_time);
+		spis_encode_bsc(&bsc_info);
 
-		_cadence = calculate_cadence(p_profile->BSC_PROFILE_cadence_rev_count, p_profile->BSC_PROFILE_cadence_event_time);
+		//printf("$CAD,%lu,%lu\n\r", bsc_info.cadence, bsc_info.speed);
 
-		printf("$CAD,%lu,%lu\n\r", _cadence, _speed);
-
-		NRF_LOG_INFO("Evenement BSC speed=%lu cad=%lu\n", _speed, _cadence);
-
+		NRF_LOG_INFO("Evenement BSC speed=%lu cad=%lu\n",
+				bsc_info.cadence, bsc_info.speed);
+	}
 		break;
 
 	default:
@@ -442,16 +439,20 @@ void ant_bsc_evt_handler(ant_bsc_profile_t * p_profile, ant_bsc_evt_t event)
  */
 static void ant_hrm_evt_handler(ant_hrm_profile_t * p_profile, ant_hrm_evt_t event)
 {
+	sHrmInfo hrm_info;
 	static uint32_t     s_previous_beat_count  = 0;    // Heart beat count from previously received page
 	uint16_t            beat_time              = p_profile->page_0.beat_time;
 	uint32_t            beat_count             = p_profile->page_0.beat_count;
-	uint32_t            computed_heart_rate    = p_profile->page_0.computed_heart_rate;
-	uint16_t rrInterval;
-	uint16_t rrInterval_ms;
+
+	hrm_info.bpm = p_profile->page_0.computed_heart_rate;
+
 
 	switch (event)
 	{
 	case ANT_HRM_PAGE_0_UPDATED:
+
+		hrm_info.bpm = p_profile->page_0.computed_heart_rate;
+
 		/* fall through */
 	case ANT_HRM_PAGE_1_UPDATED:
 		/* fall through */
@@ -459,25 +460,28 @@ static void ant_hrm_evt_handler(ant_hrm_profile_t * p_profile, ant_hrm_evt_t eve
 		/* fall through */
 	case ANT_HRM_PAGE_3_UPDATED:
 		break;
+
 	case ANT_HRM_PAGE_4_UPDATED:
 
-		NRF_LOG_INFO( "Evenement HR BPM=%u\n", (unsigned int)computed_heart_rate);
+		NRF_LOG_INFO( "Evenement HR BPM=%u\n", hrm_info.bpm);
 
 		// Ensure that there is only one beat between time intervals.
 		if ((beat_count - s_previous_beat_count) == 1)
 		{
 			uint16_t prev_beat = p_profile->page_4.prev_beat;
+			uint16_t rrInterval = (beat_time - prev_beat);
 
-			rrInterval = (beat_time - prev_beat);
-			rrInterval_ms = rrInterval * 1000. / 1024.;
+			hrm_info.rr = rrInterval * 1000. / 1024.;
 
-			printf("$HRM,%u,%u\n\r",
-					(unsigned int)computed_heart_rate,
-					(unsigned int)rrInterval_ms);
+			spis_encode_hrm(&hrm_info);
+
+//			printf("$HRM,%u,%u\n\r",
+//					hrm_info.bpm,
+//					hrm_info.rr);
 
 			// Subtracting the event time gives the R-R interval
 			//ble_hrs_rr_interval_add(&m_hrs, beat_time - prev_beat);
-			NRF_LOG_INFO( "Evenement HR RR=%u\n", (unsigned int)rrInterval_ms);
+			NRF_LOG_INFO( "Evenement HR RR=%u\n", hrm_info.rr);
 
 		}
 
@@ -490,9 +494,6 @@ static void ant_hrm_evt_handler(ant_hrm_profile_t * p_profile, ant_hrm_evt_t eve
 
 
 }
-
-
-
 
 /**@brief Function for initializing the timer module.
  */
@@ -516,13 +517,16 @@ void bsp_evt_handler(bsp_event_t evt)
 	switch (evt)
 	{
 	case BSP_EVENT_KEY_0:
-		printf("$BTN,0\n\r");
+		// TODO
+//		printf("$BTN,0\n\r");
 		break;
 	case BSP_EVENT_KEY_1:
-		printf("$BTN,1\n\r");
+		// TODO
+//		printf("$BTN,1\n\r");
 		break;
 	case BSP_EVENT_KEY_2:
-		printf("$BTN,2\n\r");
+		// TODO
+//		printf("$BTN,2\n\r");
 		break;
 	default:
 		return; // no implementation needed
@@ -600,7 +604,7 @@ static void ant_profile_setup(void)
  */
 static void buttons_leds_init(void)
 {
-	uint32_t err_code = bsp_init(BSP_INIT_BUTTONS,
+	uint32_t err_code = bsp_init(BSP_INIT_BUTTONS | BSP_INIT_LED,
 			bsp_evt_handler);
 
 	APP_ERROR_CHECK(err_code);

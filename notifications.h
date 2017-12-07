@@ -12,7 +12,13 @@
 
 #include <stdint.h>
 #include "neopixel.h"
+#include "mk64f_parser.h"
 
+typedef enum {
+	eNeoEventEmpty       = 0U,
+	eNeoEventWeakNotify  = 1U,
+	eNeoEventNotify      = 2U,
+} eNeoEventType;
 
 typedef struct
 {
@@ -29,8 +35,9 @@ extern "C" {
 #endif
 
 void notifications_init(uint8_t pin_num);
-void notifications_setNotify(uint8_t red, uint8_t green, uint8_t blue, uint8_t on_time);
-void notifications_setWeakNotify(uint8_t red, uint8_t green, uint8_t blue, uint8_t on_time);
+
+void notifications_setNotify(sNeopixelOrders* orders);
+
 void notifications_tasks(void);
 
 #ifdef __cplusplus
