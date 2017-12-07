@@ -2,7 +2,8 @@ PROJECT_NAME     := ble_app_lns_c_pca10040_s132
 TARGETS          := nrf52832_xxaa
 OUTPUT_DIRECTORY := _build
 
-SDK_ROOT := $(DISKE)/Nordic/nRF5_SDK_14.2
+include Makefile.local
+
 PROJ_DIR := ../../..
 
 $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
