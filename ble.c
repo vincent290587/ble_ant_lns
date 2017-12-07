@@ -36,7 +36,7 @@
 #include "nrf_fstorage.h"
 #include "ble_conn_state.h"
 #include "nrf_ble_gatt.h"
-
+#include "helper.h"
 #include "ble_bas_c.h"
 #include "ble_lns_c.h"
 #include "ant.h"
@@ -658,6 +658,8 @@ static void ble_stack_init(void)
 	err_code = nrf_sdh_enable_request();
 	APP_ERROR_CHECK(err_code);
 
+	ASSERT(nrf_sdh_is_enabled());
+
 	// Configure the BLE stack using the default settings.
 	// Fetch the start address of the application RAM.
 	uint32_t ram_start = 0;
@@ -744,23 +746,30 @@ static void lns_c_evt_handler(ble_lns_c_t * p_lns_c, ble_lns_c_evt_t * p_lns_c_e
 
 	case BLE_LNS_C_EVT_LNS_NOTIFICATION:
 	{
-		NRF_LOG_INFO("Latitude = %ld.\r\n", p_lns_c_evt->params.lns.lat);
-		NRF_LOG_INFO("Longitude = %ld.\r\n", p_lns_c_evt->params.lns.lon);
+		NRF_LOG_INFO("Latitude = %ld", p_lns_c_evt->params.lns.lat);
+		NRF_LOG_INFO("Longitude = %ld", p_lns_c_evt->params.lns.lon);
 
 		// smart technique to go from uint24 to int24 ;-)
-		uint32_t tmp_ele = (((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[0]) << 8)  |
-				(((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[1]) << 16)  |
-				(((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[2]) << 24);
-		int32_t elev = ((int32_t) (tmp_ele)) >> 8;
+//		uint32_t tmp_ele = (((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[0]) << 8)  |
+//				(((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[1]) << 16)  |
+//				(((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[2]) << 24);
+//		int32_t elev = ((int32_t) (tmp_ele)) >> 8;
 
-		NRF_LOG_INFO("Ele %ld - %u %u %u %u\r\n", elev,
-				p_lns_c_evt->params.lns.ele.p_data[0],
-				p_lns_c_evt->params.lns.ele.p_data[1],
+//		uint32_t tmp_ele = uint24_decode(p_lns_c_evt->params.lns.ele.p_data) << 8;
+//		int32_t elev = ((int32_t) (tmp_ele));
+//		elev = elev / 0xFFFF;
+
+		uint16_t tmp_ele = uint16_decode(p_lns_c_evt->params.lns.ele.p_data+1);
+		int16_t elev = ((int16_t) (tmp_ele));
+		elev = elev / 0xFF;
+
+		NRF_LOG_INFO("Ele %ld %08X - %02X %02X %02X", (int32_t)elev, tmp_ele,
 				p_lns_c_evt->params.lns.ele.p_data[2],
-				p_lns_c_evt->params.lns.ele.size);
-		if (elev == -65264) {
-			elev = 0;
-		}
+				p_lns_c_evt->params.lns.ele.p_data[1],
+				p_lns_c_evt->params.lns.ele.p_data[0]);
+//		if (elev == -65264) {
+//			elev = 0;
+//		}
 
 		uint32_t sec_jour = p_lns_c_evt->params.lns.utc_time.seconds;
 		sec_jour += p_lns_c_evt->params.lns.utc_time.minutes * 60;
@@ -768,7 +777,7 @@ static void lns_c_evt_handler(ble_lns_c_t * p_lns_c, ble_lns_c_evt_t * p_lns_c_e
 		sec_jour += (p_lns_c_evt->params.lns.utc_time.hours - 2) * 3600;
 
 		uint16_t speed = p_lns_c_evt->params.lns.inst_speed;
-		NRF_LOG_INFO("Speed = %u\r\n", speed);
+		NRF_LOG_INFO("Speed = %u", speed);
 
 		// limit to 70km/h
 		if (speed > 70 * 100 / 3.6) {
@@ -779,8 +788,16 @@ static void lns_c_evt_handler(ble_lns_c_t * p_lns_c, ble_lns_c_evt_t * p_lns_c_e
 				p_lns_c_evt->params.lns.utc_time.minutes,
 				p_lns_c_evt->params.lns.utc_time.seconds);
 
-		printf("$LOC,%lu,%ld,%ld,%ld,%u\r\n", sec_jour,
-				p_lns_c_evt->params.lns.lat, p_lns_c_evt->params.lns.lon, elev, speed);
+//		printf("$LOC,%lu,%ld,%ld,%ld,%u", sec_jour,
+//				p_lns_c_evt->params.lns.lat, p_lns_c_evt->params.lns.lon, elev, speed);
+
+		sLnsInfo lns_info;
+		lns_info.lat = p_lns_c_evt->params.lns.lat;
+		lns_info.lon = p_lns_c_evt->params.lns.lon;
+		lns_info.ele = elev;
+		lns_info.secj = sec_jour;
+
+		spis_encode_lns(&lns_info);
 
 		break;
 	}
@@ -1092,7 +1109,6 @@ void ble_ant_init(void)
 
 	// Start scanning for peripherals and initiate connection
 	// with devices that advertise LNS UUID.
-	NRF_LOG_INFO("LNS central");
 	scan_start();
 
 }

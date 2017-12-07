@@ -17,7 +17,7 @@
 #define TX_BUFF_FLAGS_BSC_BIT     2U
 
 #define TX_BUFF_FLAGS_SIZE        1U
-#define TX_BUFF_LNS_SIZE          12U
+#define TX_BUFF_LNS_SIZE          16U
 #define TX_BUFF_HRM_SIZE          3U
 #define TX_BUFF_BSC_SIZE          8U
 

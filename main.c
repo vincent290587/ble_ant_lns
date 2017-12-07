@@ -14,6 +14,8 @@
 #include "spis.h"
 #include "notifications.h"
 #include "helper.h"
+#include "bsp.h"
+#include "bsp_btn_ble.h"
 #include "app_scheduler.h"
 #include "app_timer.h"
 #include "nrf_pwr_mgmt.h"
@@ -46,7 +48,7 @@ APP_TIMER_DEF(m_job_timer);
 extern void ble_ant_init(void);
 
 
-static volatile bool job_to_do = true;
+static volatile bool job_to_do = false;
 
 
 /**
@@ -121,6 +123,45 @@ static void log_init(void)
 }
 
 
+/**@brief Function for handling bsp events.
+ */
+static void bsp_evt_handler(bsp_event_t evt)
+{
+
+	switch (evt)
+	{
+	case BSP_EVENT_KEY_0:
+		// TODO
+//		printf("$BTN,0\n\r");
+		break;
+	case BSP_EVENT_KEY_1:
+		// TODO
+//		printf("$BTN,1\n\r");
+		break;
+	case BSP_EVENT_KEY_2:
+		// TODO
+//		printf("$BTN,2\n\r");
+		break;
+	default:
+		return; // no implementation needed
+	}
+
+}
+
+
+/**@brief Function for initializing buttons and LEDs.
+ *
+ * @param[out] p_erase_bonds  True if the clear bonds button was pressed to wake the application up.
+ */
+static void buttons_leds_init(void)
+{
+	uint32_t err_code = bsp_init(BSP_INIT_BUTTONS | BSP_INIT_LED,
+			bsp_evt_handler);
+
+	APP_ERROR_CHECK(err_code);
+
+}
+
 /**
  *
  * @return 0
@@ -140,10 +181,12 @@ int main(void)
 
 	nrf_gpio_pin_set(LDO_PIN);
 
-	APP_SCHED_INIT(SCHED_MAX_EVENT_DATA_SIZE, SCHED_QUEUE_SIZE);
-
 	// Initialize.
 	log_init();
+
+	NRF_LOG_INFO("Init start");
+
+	APP_SCHED_INIT(SCHED_MAX_EVENT_DATA_SIZE, SCHED_QUEUE_SIZE);
 
 	// Initialize timer module
 	err_code = app_timer_init();
@@ -151,12 +194,13 @@ int main(void)
 
 	ant_timers_init();
 
-	spis_init();
-	notifications_init(NEO_PIN);
+	//buttons_leds_init();
 
 	// init BLE + ANT
 	ble_ant_init();
 
+	//spis_init();
+	notifications_init(NEO_PIN);
 
 	err_code = app_timer_create(&m_job_timer, APP_TIMER_MODE_REPEATED, timer_event_handler);
 	APP_ERROR_CHECK(err_code);
@@ -164,20 +208,28 @@ int main(void)
 	err_code = app_timer_start(m_job_timer, APP_DELAY, NULL);
 	APP_ERROR_CHECK(err_code);
 
+	NRF_LOG_INFO("LNS central start");
+
 	for (;;)
 	{
-		app_sched_execute();
-
-		spis_tasks();
-
-		sd_app_evt_wait();
-
 		if (job_to_do) {
 			job_to_do = false;
+
+			NRF_LOG_INFO("Job");
 
 			// TODO job
 			notifications_tasks();
 		}
+
+		app_sched_execute();
+
+		//spis_tasks();
+
+		if (NRF_LOG_PROCESS() == false)
+		{
+			sd_app_evt_wait();
+		}
+
 	}
 }
 

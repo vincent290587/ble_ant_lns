@@ -48,9 +48,10 @@ typedef struct {
 } sBscInfo;
 
 typedef struct {
-	uint32_t lat;
-	uint32_t lon;
-	int32_t ele;
+	float lat;
+	float lon;
+	float ele;
+	uint32_t secj;
 } sLnsInfo;
 
 ////////////// RX PAGES

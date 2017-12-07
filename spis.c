@@ -51,7 +51,6 @@ void spis_init(void) {
 	// (when the CPU is in sleep mode).
 	NRF_POWER->TASKS_CONSTLAT = 1;
 
-	NRF_LOG_INFO("SPIS init");
 
 	nrf_drv_spis_config_t spis_config = NRF_DRV_SPIS_DEFAULT_CONFIG;
 	spis_config.csn_pin               = SPIS_MISO_PIN;
@@ -65,6 +64,8 @@ void spis_init(void) {
 	spis_xfer_done = false;
 
 	APP_ERROR_CHECK(nrf_drv_spis_buffers_set(&spis, m_tx_buf, SPIS_BUFFER_SIZE, m_rx_buf, SPIS_BUFFER_SIZE));
+
+	NRF_LOG_INFO("SPIS init");
 }
 
 /**

@@ -37,8 +37,6 @@
 #include "app_scheduler.h"
 #include "app_uart.h"
 #include "nrf_soc.h"
-#include "bsp.h"
-#include "bsp_btn_ble.h"
 #include "nrf_delay.h"
 #include "app_timer.h"
 #include "nrf_drv_wdt.h"
@@ -509,31 +507,6 @@ void ant_timers_init(void)
 
 }
 
-/**@brief Function for handling bsp events.
- */
-void bsp_evt_handler(bsp_event_t evt)
-{
-
-	switch (evt)
-	{
-	case BSP_EVENT_KEY_0:
-		// TODO
-//		printf("$BTN,0\n\r");
-		break;
-	case BSP_EVENT_KEY_1:
-		// TODO
-//		printf("$BTN,1\n\r");
-		break;
-	case BSP_EVENT_KEY_2:
-		// TODO
-//		printf("$BTN,2\n\r");
-		break;
-	default:
-		return; // no implementation needed
-	}
-
-}
-
 
 /**
  * @brief WDT events handler.
@@ -597,35 +570,14 @@ static void ant_profile_setup(void)
 }
 
 
-
-/**@brief Function for initializing buttons and LEDs.
- *
- * @param[out] p_erase_bonds  True if the clear bonds button was pressed to wake the application up.
- */
-static void buttons_leds_init(void)
-{
-	uint32_t err_code = bsp_init(BSP_INIT_BUTTONS | BSP_INIT_LED,
-			bsp_evt_handler);
-
-	APP_ERROR_CHECK(err_code);
-
-}
-
-
-
 /**@brief Function for application main entry.
  */
 int ant_setup_start(void)
 {
-	buttons_leds_init();
-
 	ant_profile_setup();
 
 	return 0;
 }
 
 
-/**
- * @}
- */
 
