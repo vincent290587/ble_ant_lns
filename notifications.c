@@ -13,15 +13,27 @@ static bool                 is_counting_up; /**< Flag for indicating if counter 
 static int32_t              pause_ticks;
 static uint32_t             ratio;
 
-
+/**
+ *
+ */
 static void notifications_clear() {
 	neopixel_clear(&strip);
 }
 
+/**
+ *
+ */
 static void notifications_show() {
 	neopixel_show(&strip);
 }
 
+/**
+ *
+ * @param red
+ * @param green
+ * @param blue
+ * @return
+ */
 static uint8_t notifications_setColor(uint8_t red, uint8_t green, uint8_t blue ) {
 	return neopixel_set_color(&strip, 0, red, green, blue );
 }
@@ -59,25 +71,48 @@ void notifications_init(uint8_t pin_num) {
  * @param blue
  * @param on_time
  */
-void notifications_setNotify(uint8_t red, uint8_t green, uint8_t blue, uint8_t on_time) {
+static void _set_notify(uint8_t red, uint8_t green, uint8_t blue, uint8_t on_time) {
 
-	notifications_setNotify(red, green, blue, on_time);
-	_params.on_time_ticks = on_time;
+	_params.rgb[0] = red;
+	_params.rgb[1] = green;
+	_params.rgb[2] = blue;
 
+	// start process
+	is_counting_up = true;
+	leds_is_on     = true;
+	ratio          = _params.min;
+	pause_ticks    = 0;
+
+	_params.on_time_ticks = on_time == 0 ? ON_TICKS_DEFAULT : on_time;
 }
 
 /**
  *
- * @param red
- * @param green
- * @param blue
- * @param on_time
+ * @param orders
  */
-void notifications_setWeakNotify(uint8_t red, uint8_t green, uint8_t blue, uint8_t on_time) {
+void notifications_setNotify(sNeopixelOrders* orders) {
 
-	if (!leds_is_on) {
-		notifications_setNotify(red, green, blue, on_time);
-		_params.on_time_ticks = on_time;
+	switch (orders->event_type) {
+	case eNeoEventEmpty:
+		break;
+
+	case eNeoEventWeakNotify:
+
+		if (leds_is_on) return;
+		// no break
+
+	case eNeoEventNotify:
+	{
+		_set_notify(
+				orders->rgb[0],
+				orders->rgb[1],
+				orders->rgb[2],
+				orders->on_time);
+	}
+	break;
+
+	default:
+		break;
 	}
 
 }

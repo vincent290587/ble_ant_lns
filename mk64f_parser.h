@@ -11,22 +11,29 @@
 #include <stdint.h>
 
 typedef enum {
+	eSpiRxPageInv  = 0xFF,
 	eSpiRxPage0    = 0U,
 	eSpiRxPage1    = 1U,
-} eSpiRxPages;
+} eSpisRxPages;
 
 ////////////// RX SPIS
 
 typedef struct {
-	uint8_t weak;
-	uint8_t rgb[3];
+	uint8_t event_type;
 	uint8_t on_time;
+	uint8_t rgb[3];
 } sNeopixelOrders;
 
 typedef struct {
 	uint8_t  led;
-	uint16_t millieme_avance;
+	uint8_t  av_ent;
+	uint8_t  av_dec;
 } sGlassesOrders;
+
+typedef struct {
+	uint8_t  soc;
+	uint16_t mv;
+} sBatteryOrders;
 
 ////////////// TX SPIS
 
@@ -49,8 +56,9 @@ typedef struct {
 ////////////// RX PAGES
 
 typedef struct {
-	sNeopixelOrders neo_info;
+	sBatteryOrders  batt_info;
 	sGlassesOrders  glasses_info;
+	sNeopixelOrders neo_info;
 } sSpisRxInfoPage0;
 
 typedef struct {
@@ -60,7 +68,14 @@ typedef struct {
 typedef union {
 	sSpisRxInfoPage0 page0;
 	sSpisRxInfoPage1 page1;
+} sSpisRxPages;
+
+typedef struct {
+	eSpisRxPages page_id;
+	sSpisRxPages pages;
 } sSpisRxInfo;
+
+
 
 #ifdef __cplusplus
 extern "C" {

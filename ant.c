@@ -51,7 +51,7 @@
 #include "ant_interface.h"
 
 #include "spis_pages.h"
-#include "serial_handling.h"
+#include "glasses.h"
 
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
@@ -153,8 +153,6 @@ static bsc_disp_calc_data_t m_cadence_calc_data = {0};
 
 static uint8_t is_hrm_init = 0;
 static uint8_t is_cad_init = 0;
-
-
 
 
 /**
@@ -371,13 +369,11 @@ void ant_evt_glasses (ant_evt_t * p_ant_evt)
 {
 	uint32_t err_code = NRF_SUCCESS;
 
-	uint8_t *glasses_payload = get_glasses_payload();
-
 	switch (p_ant_evt->event)
 	{
 	case EVENT_TX:
 		NRF_LOG_DEBUG("Sending glasses payload");
-		ant_glasses_tx_evt_handle(&m_ant_glasses, p_ant_evt, glasses_payload);
+		ant_glasses_tx_evt_handle(&m_ant_glasses, p_ant_evt, m_glasses_payload);
 		break;
 	case EVENT_RX:
 		break;
@@ -499,9 +495,6 @@ static void ant_hrm_evt_handler(ant_hrm_profile_t * p_profile, ant_hrm_evt_t eve
 
 }
 
-
-
-
 /**@brief Function for initializing the timer module.
  */
 void ant_timers_init(void)
@@ -524,13 +517,16 @@ void bsp_evt_handler(bsp_event_t evt)
 	switch (evt)
 	{
 	case BSP_EVENT_KEY_0:
-		printf("$BTN,0\n\r");
+		// TODO
+//		printf("$BTN,0\n\r");
 		break;
 	case BSP_EVENT_KEY_1:
-		printf("$BTN,1\n\r");
+		// TODO
+//		printf("$BTN,1\n\r");
 		break;
 	case BSP_EVENT_KEY_2:
-		printf("$BTN,2\n\r");
+		// TODO
+//		printf("$BTN,2\n\r");
 		break;
 	default:
 		return; // no implementation needed
@@ -608,7 +604,7 @@ static void ant_profile_setup(void)
  */
 static void buttons_leds_init(void)
 {
-	uint32_t err_code = bsp_init(BSP_INIT_BUTTONS,
+	uint32_t err_code = bsp_init(BSP_INIT_BUTTONS | BSP_INIT_LED,
 			bsp_evt_handler);
 
 	APP_ERROR_CHECK(err_code);

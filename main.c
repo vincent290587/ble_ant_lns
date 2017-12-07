@@ -29,7 +29,7 @@
 #define NEO_PIN             7
 #define LED_PIN             14    // 8 ou 14
 #define AT42_COUT           18
-#define STC_DELAY           APP_TIMER_TICKS(1000)
+#define APP_DELAY           APP_TIMER_TICKS(100)
 
 #define SCHED_MAX_EVENT_DATA_SIZE      APP_TIMER_SCHED_EVENT_DATA_SIZE              /**< Maximum size of scheduler events. */
 #ifdef SVCALL_AS_NORMAL_FUNCTION
@@ -84,7 +84,7 @@ int main(void)
 	err_code = app_timer_create(&m_job_timer, APP_TIMER_MODE_REPEATED, timer_event_handler);
 	APP_ERROR_CHECK(err_code);
 
-	err_code = app_timer_start(m_job_timer, STC_DELAY, NULL);
+	err_code = app_timer_start(m_job_timer, APP_DELAY, NULL);
 	APP_ERROR_CHECK(err_code);
 
     for (;;)
@@ -92,7 +92,6 @@ int main(void)
     	app_sched_execute();
 
     	spis_tasks();
-    	notifications_tasks();
 
     	sd_app_evt_wait();
 
@@ -100,6 +99,7 @@ int main(void)
     		job_to_do = false;
 
     		// TODO job
+    		notifications_tasks();
     	}
     }
 }

@@ -40,7 +40,7 @@
 #include "ble_bas_c.h"
 #include "ble_lns_c.h"
 #include "ant.h"
-#include "serial_handling.h"
+#include "glasses.h"
 
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
