@@ -45,7 +45,7 @@
 	- Do not use neopixel_set_color_and_show(...) with BLE, instead use uint8_t neopixel_set_color(...);
  */
 
-#include "NeoPixel.h"
+#include "neopixel.h"
 
 #include "nrf_delay.h"
 #include "nrf_gpio.h"
