@@ -38,14 +38,15 @@ CFLAGS += -DNRF52_PAN_36
 CFLAGS += -DNRF52_PAN_64
 CFLAGS += -DSOFTDEVICE_PRESENT
 CFLAGS += -DCONFIG_NFCT_PINS_AS_GPIOS
-CFLAGS += -DBOARD_PCA10040
+CFLAGS += -DBOARD_CUSTOM
+CFLAGS += -DFLOAT_ABI_HARD
 CFLAGS += -DNRF52832
 CFLAGS += -DNRF52_PAN_12
 CFLAGS += -DNRF52_PAN_58
 CFLAGS += -DNRF52_PAN_54
 CFLAGS += -DNRF52_PAN_31
 CFLAGS += -DNRF52_PAN_51
-CFLAGS += -D__HEAP_SIZE=512
+CFLAGS += -D__HEAP_SIZE=0
 CFLAGS += -DBLE_STACK_SUPPORT_REQD
 CFLAGS += -DANT_STACK_SUPPORT_REQD
 CFLAGS += -DNRF52_PAN_15
@@ -56,7 +57,7 @@ CFLAGS += -DNRF52_PAN_55
 CFLAGS += -DS332
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb -mabi=aapcs
-CFLAGS +=  -Wall -Ofast
+CFLAGS +=  -Wall $(OPT)
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # keep every function in separate section, this allows linker to discard unused ones
 CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
@@ -74,7 +75,8 @@ ASMFLAGS += -DNRF52
 ASMFLAGS += -DNRF52_PAN_36
 ASMFLAGS += -DNRF52_PAN_64
 ASMFLAGS += -DSOFTDEVICE_PRESENT
-ASMFLAGS += -DBOARD_STRAVA5
+ASMFLAGS += -DFLOAT_ABI_HARD
+ASMFLAGS += -DBOARD_CUSTOM
 ASMFLAGS += -DNRF52832
 ASMFLAGS += -DNRF52832_XXAA
 ASMFLAGS += -DNRF52_PAN_12
@@ -82,7 +84,7 @@ ASMFLAGS += -DNRF52_PAN_58
 ASMFLAGS += -DNRF52_PAN_54
 ASMFLAGS += -DNRF52_PAN_31
 ASMFLAGS += -DNRF52_PAN_51
-ASMFLAGS += -D__HEAP_SIZE=512
+ASMFLAGS += -D__HEAP_SIZE=0
 ASMFLAGS += -DBLE_STACK_SUPPORT_REQD -DANT_STACK_SUPPORT_REQD
 ASMFLAGS += -DNRF52_PAN_15
 ASMFLAGS += -DNRF_SD_BLE_API_VERSION=5
@@ -134,6 +136,14 @@ dfu:
 	nrfutil --verbose pkg generate --hw-version 52 --sd-req 0x8e --application-version 1 --application $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex --key-file $(SDK_ROOT)/../../vault/priv.pem s332_ble_ant_lns.zip
 	mv s332_ble_ant_lns.zip $(DROPBOX)
 
+SDK_CONFIG_FILE := ../config/sdk_config.h
+SDK_CONFIG_FILE_ANT := ../config/sdk_config_ant.h
+CMSIS_CONFIG_TOOL := $(SDK_ROOT)/external_tools/cmsisconfig/CMSIS_Configuration_Wizard.jar
+sdk_config:
+	java -jar $(CMSIS_CONFIG_TOOL) $(SDK_CONFIG_FILE)
+	
+sdk_config_ant:
+	java -jar $(CMSIS_CONFIG_TOOL) $(SDK_CONFIG_FILE_ANT)
 
 erase:
 	nrfjprog --eraseall -f nrf52

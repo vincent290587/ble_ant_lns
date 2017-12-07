@@ -51,17 +51,16 @@ CFLAGS += -DNRF52_PAN_55
 CFLAGS += -DS332
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb -mabi=aapcs
-CFLAGS +=  -Wall -Ofast
+CFLAGS +=  -Wall 
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # keep every function in separate section, this allows linker to discard unused ones
 CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
-CFLAGS += -fno-builtin -fshort-enums -nostdlib -fno-exceptions
+CFLAGS += -fno-builtin -fshort-enums 
 
 # C++ flags common to all targets
-CXXFLAGS += $(OPT) -std=gnu++0x -felide-constructors -fno-exceptions -fno-rtti
+CXXFLAGS += $(OPT)
 
 # Assembler flags common to all targets
-ASMFLAGS += -x assembler-with-cpp
 ASMFLAGS += -mcpu=cortex-m4
 ASMFLAGS += -mthumb -mabi=aapcs
 ASMFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
@@ -93,8 +92,11 @@ LDFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # let linker to dump unused sections
 LDFLAGS += -Wl,--gc-sections
 # use newlib in nano version
-LDFLAGS += --specs=nano.specs -lc -lnosys
+LDFLAGS += --specs=nano.specs
 
+# Add standard libraries at the very end of the linker input, after all objects
+# that may need symbols provided by these libraries.
+LIB_FILES += -lc -lnosys -lm
 
 .PHONY: $(TARGETS) default all clean help flash flash_softdevice
 
@@ -125,7 +127,7 @@ flash_softdevice:
 #	nrfjprog --reset -f nrf52
 
 dfu:
-	nrfutil --verbose pkg generate --hw-version 52 --sd-req 0x8e --application-version 1 --application $(OUTPUT_DIRECTORY)/nrf52840_xxaa.hex --key-file $(SDK_ROOT)/vault/priv.pem s332_ble_ant_lns.zip
+	nrfutil --verbose pkg generate --hw-version 52 --sd-req 0x9b --application-version 1 --application $(OUTPUT_DIRECTORY)/nrf52840_xxaa.hex --key-file $(SDK_ROOT)/vault/priv.pem s332_ble_ant_lns.zip
 	mv s332_ble_ant_lns.zip $(DROPBOX)
 
 
