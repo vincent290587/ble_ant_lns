@@ -119,12 +119,13 @@ void notifications_setNotify(sNeopixelOrders* orders) {
 
 /**
  *
+ * @return 1 if no task is active
  */
-void notifications_tasks() {
+uint8_t notifications_tasks() {
 
 	if (!leds_is_on) {
 		notifications_clear();
-		return;
+		return 1;
 	}
 
 	// continue process
@@ -151,7 +152,7 @@ void notifications_tasks() {
 				// end process
 				leds_is_on = false;
 				notifications_clear();
-				return;
+				return 1;
 			}
 			else
 			{
@@ -169,6 +170,8 @@ void notifications_tasks() {
 			_params.rgb[1] * ratio * ratio / 255,
 			_params.rgb[2] * ratio * ratio / 255);
 	notifications_show();
+
+	return 0;
 }
 
 

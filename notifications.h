@@ -38,7 +38,7 @@ void notifications_init(uint8_t pin_num);
 
 void notifications_setNotify(sNeopixelOrders* orders);
 
-void notifications_tasks(void);
+uint8_t notifications_tasks(void);
 
 #ifdef __cplusplus
 }

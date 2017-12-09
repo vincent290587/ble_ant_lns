@@ -45,50 +45,29 @@
 	- Do not use neopixel_set_color_and_show(...) with BLE, instead use uint8_t neopixel_set_color(...);
  */
 
+#include "nrf_soc.h"
 #include "neopixel.h"
-
 #include "nrf_delay.h"
 #include "nrf_gpio.h"
+#include "ws2812B_commands.h"
 
 
-//These defines are timed specific to a series of if statements and will need to be changed
-//to compensate for different writing algorithms than the one in neopixel.c
+neopixel_strip_t* m_p_strip = NULL;
 
-// nop=62.5ns
-#define NEOPIXEL_SEND_ONE	NRF_GPIO->OUTSET = (1UL << PIN); \
-		__ASM ( \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-		); \
-		NRF_GPIO->OUTCLR = (1UL << PIN); \
-		__ASM ( \
-				" NOP\n\t" \
-		);
-
-// modif pour avoir le bon ON-time
-#define NEOPIXEL_SEND_ZERO \
-	    NRF_GPIO->OUTSET = (1UL << PIN); \
-		NRF_GPIO->OUTCLR = (1UL << PIN);  \
-		__ASM ( \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-				" NOP\n\t" \
-		);
-
+volatile bool m_neo_orders_ready = false;
 
 ////////////       FUNCTIONS
+
+static void _neopixel_show(neopixel_strip_t *strip);
+
+void neopixel_radio_callback_handler(bool radio_active)
+{
+	if (radio_active == false && m_neo_orders_ready)
+	{
+		m_neo_orders_ready = false;
+		_neopixel_show(m_p_strip);
+	}
+}
 
 void neopixel_init(neopixel_strip_t *strip, uint8_t pin_num, uint16_t num_leds)
 {
@@ -104,6 +83,7 @@ void neopixel_init(neopixel_strip_t *strip, uint8_t pin_num, uint16_t num_leds)
 		strip->leds[i].simple.r = 0;
 		strip->leds[i].simple.b = 0;
 	}
+
 }
 
 void neopixel_clear(neopixel_strip_t *strip)
@@ -117,14 +97,10 @@ void neopixel_clear(neopixel_strip_t *strip)
 	neopixel_show(strip);
 }
 
-#include "nrf_nvic.h"
-void neopixel_show(neopixel_strip_t *strip)
+
+static void _neopixel_show(neopixel_strip_t *strip)
 {
 	const uint8_t PIN =  strip->pin_num;
-
-	__disable_irq();
-	//uint8_t is_nested_critical_region=0;
-	//sd_nvic_critical_region_enter(&is_nested_critical_region);
 
 	NRF_GPIO->OUTCLR = (1UL << PIN);
 	nrf_delay_us(55);
@@ -175,8 +151,13 @@ void neopixel_show(neopixel_strip_t *strip)
 		}
 	}
 
-	__enable_irq();
-	//sd_nvic_critical_region_exit(is_nested_critical_region);
+}
+
+
+void neopixel_show(neopixel_strip_t *strip)
+{
+	m_neo_orders_ready = true;
+	m_p_strip = strip;
 }
 
 uint8_t neopixel_set_color(neopixel_strip_t *strip, uint16_t index, uint8_t red, uint8_t green, uint8_t blue )

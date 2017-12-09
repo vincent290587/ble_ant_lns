@@ -22,6 +22,7 @@
 #include "ble_hci.h"
 #include "ble_db_discovery.h"
 #include "ble_srv_common.h"
+#include "ble_radio_notification.h"
 #include "nrf_sdh.h"
 #include "nrf_sdh_ble.h"
 #include "nrf_sdh_soc.h"
@@ -42,6 +43,7 @@
 #include "ant.h"
 #include "glasses.h"
 #include "spis_pages.h"
+#include "neopixel.h"
 
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
@@ -611,41 +613,13 @@ static void soc_evt_handler(uint32_t evt_id, void * p_context)
 }
 
 
-///**@brief Function for dispatching a BLE stack event to all modules with a BLE stack event handler.
-// *
-// * @details This function is called from the scheduler in the main loop after a BLE stack event has
-// *  been received.
-// *
-// * @param[in]   p_ble_evt   Bluetooth stack event.
-// */
-//static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
-//{
-//    // Modules which depend on ble_conn_state, like Peer Manager,
-//    // should have their callbacks invoked after ble_conn_state's.
-//    ble_conn_state_on_ble_evt(p_ble_evt);
-//    pm_on_ble_evt(p_ble_evt);
-//    ble_db_discovery_on_ble_evt(&m_db_disc, p_ble_evt);
-//
-//    ble_lns_c_on_ble_evt(&m_ble_lns_c, p_ble_evt);
-//    ble_bas_c_on_ble_evt(&m_ble_bas_c, p_ble_evt);
-//
-//    nrf_ble_gatt_on_ble_evt(&m_gatt, p_ble_evt);
-//    on_ble_evt(p_ble_evt);
-//}
-
-
-///**@brief Function for dispatching a system event to interested modules.
-// *
-// * @details This function is called from the System event interrupt handler after a system
-// *          event has been received.
-// *
-// * @param[in]   sys_evt   System stack event.
-// */
-//static void sys_evt_dispatch(uint32_t sys_evt)
-//{
-//    fs_sys_event_handler(sys_evt);
-//    on_sys_evt(sys_evt);
-//}
+void ble_radio_callback_handler(bool radio_active)
+{
+	if (radio_active == false)
+	{
+		neopixel_radio_callback_handler(radio_active);
+	}
+}
 
 
 /**@brief Function for initializing the BLE stack.
@@ -674,6 +648,10 @@ static void ble_stack_init(void)
 	// Register handlers for BLE and SoC events.
 	NRF_SDH_BLE_OBSERVER(m_ble_observer, APP_BLE_OBSERVER_PRIO, ble_evt_handler, NULL);
 	NRF_SDH_SOC_OBSERVER(m_soc_observer, APP_SOC_OBSERVER_PRIO, soc_evt_handler, NULL);
+
+	// radio callback to write to the neopixels right ;-)
+	err_code = ble_radio_notification_init(7, NRF_RADIO_NOTIFICATION_DISTANCE_1740US, ble_radio_callback_handler);
+	APP_ERROR_CHECK(err_code);
 }
 
 

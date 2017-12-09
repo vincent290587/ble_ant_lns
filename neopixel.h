@@ -18,6 +18,8 @@
 #define WS_ORANGE  0xFF,0x99,0x33
 #define WS_VIOLET  0xFF,0x33,0xFF
 
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -35,6 +37,12 @@ typedef struct {
 	uint16_t num_leds;
 	color_t leds[2];
 } neopixel_strip_t;
+
+/**
+ *
+ * @param radio_active
+ */
+void neopixel_radio_callback_handler(bool radio_active);
 
 /**
   @brief Initialize GPIO and data location
@@ -79,7 +87,6 @@ uint8_t neopixel_set_color(neopixel_strip_t *strip, uint16_t index, uint8_t red,
   @retval 1 LED number is out of bounds
 */
 uint8_t neopixel_set_color_and_show(neopixel_strip_t *strip, uint16_t index, uint8_t red, uint8_t green, uint8_t blue);
-
 
 
 #ifdef __cplusplus
