@@ -35,6 +35,30 @@ typedef struct {
 	uint16_t mv;
 } sBatteryOrders;
 
+typedef enum {
+	eFecControlTargetPower,
+	eFecControlSlope,
+} eFecControlType;
+
+typedef struct {
+	uint16_t target_power_w;
+} sControlTargetPower;
+
+typedef struct {
+	float slope_ppc;
+	float rolling_resistance;
+} sControlSlope;
+
+typedef union {
+	sControlTargetPower power_control;
+	sControlSlope       slope_control;
+} uControlPages;
+
+typedef struct {
+	eFecControlType type;
+	uControlPages   data;
+} sFecControl;
+
 ////////////// TX SPIS
 
 typedef struct {
@@ -54,12 +78,19 @@ typedef struct {
 	uint32_t secj;
 } sLnsInfo;
 
+typedef struct {
+	uint16_t power;
+	uint16_t speed;
+	uint16_t el_time;
+} sFecInfo;
+
 ////////////// RX PAGES
 
 typedef struct {
 	sBatteryOrders  batt_info;
 	sGlassesOrders  glasses_info;
 	sNeopixelOrders neo_info;
+	sFecControl     fec_info;
 } sSpisRxInfoPage0;
 
 typedef struct {

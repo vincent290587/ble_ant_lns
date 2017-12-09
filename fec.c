@@ -11,6 +11,7 @@
 #include "ant_fec_pages.h"
 #include "ant_interface.h"
 #include "app_timer.h"
+#include "spis_pages.h"
 
 
 #include "nrf_log.h"
@@ -22,6 +23,8 @@
 
 ant_fec_profile_t        m_ant_fec;
 sFecControl              m_fec_control;
+
+sFecInfo                 m_fec_spis_info;
 
 APP_TIMER_DEF(m_fec_update);
 
@@ -89,16 +92,22 @@ void ant_fec_evt_handler(ant_fec_profile_t * p_profile, ant_fec_evt_t event)
 		break;
 
 	case ANT_FEC_PAGE_16_UPDATED:
-		/* fall through */
+		m_fec_spis_info.speed = ant_fec_utils_raw_speed_to_uint16_t(p_profile->page_16.speed);
+		m_fec_spis_info.el_time = ant_fec_utils_raw_time_to_uint16_t(p_profile->page_16.elapsed_time);
+		spis_encode_fec(&m_fec_spis_info);
+		break;
+
+	case ANT_FEC_PAGE_25_UPDATED:
+		m_fec_spis_info.power = p_profile->page_25.inst_power;
+		spis_encode_fec(&m_fec_spis_info);
+		break;
+
 	case ANT_FEC_PAGE_17_UPDATED:
 		/* fall through */
 	case ANT_FEC_PAGE_21_UPDATED:
-	case ANT_FEC_PAGE_25_UPDATED:
-
 	case ANT_FEC_PAGE_48_UPDATED:
 	case ANT_FEC_PAGE_49_UPDATED:
 	case ANT_FEC_PAGE_51_UPDATED:
-
 		/* fall through */
 	case ANT_FEC_PAGE_80_UPDATED:
 		/* fall through */
@@ -180,5 +189,11 @@ void fec_init(void) {
 
 	m_fec_control.type = eFecControlTargetPower;
 	m_fec_control.data.power_control.target_power_w = 190;
+
+}
+
+void fec_set_control(sFecControl* tbc) {
+
+	memcpy(&m_fec_control, tbc, sizeof(m_fec_control));
 
 }

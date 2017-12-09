@@ -47,6 +47,18 @@ void spis_encode_bsc(sBscInfo* info) {
 
 /**
  *
+ * @param info
+ */
+void spis_encode_fec(sFecInfo* info) {
+	m_tx_buf[TX_BUFF_FLAGS_POS] |= 1 << TX_BUFF_FLAGS_BSC_BIT;
+
+	encode_uint16 (m_tx_buf + TX_BUFF_FEC_START + 0, info->el_time);
+	encode_uint16 (m_tx_buf + TX_BUFF_FEC_START + 2, info->speed);
+	encode_uint16 (m_tx_buf + TX_BUFF_FEC_START + 4, info->power);
+}
+
+/**
+ *
  * @param rx_buf
  * @param output
  */
@@ -65,6 +77,14 @@ static void spis_decode_page0(uint8_t *rx_buf, sSpisRxInfo *output) {
 	output->pages.page0.neo_info.rgb[0]     = rx_buf[RX_BUFF_NEO_START + 2U];
 	output->pages.page0.neo_info.rgb[1]     = rx_buf[RX_BUFF_NEO_START + 3U];
 	output->pages.page0.neo_info.rgb[2]     = rx_buf[RX_BUFF_NEO_START + 4U];
+
+	output->pages.page0.fec_info.type       = rx_buf[RX_BUFF_FEC_START];
+	if (output->pages.page0.fec_info.type == eFecControlTargetPower) {
+		output->pages.page0.fec_info.data.power_control.target_power_w = decode_uint16 (rx_buf + RX_BUFF_FEC_START + 1U);
+	} else if (eFecControlSlope) {
+		output->pages.page0.fec_info.data.slope_control.slope_ppc = (float)decode_uint32 (rx_buf + RX_BUFF_FEC_START + 1U);
+		output->pages.page0.fec_info.data.slope_control.rolling_resistance = (float)decode_uint32 (rx_buf + RX_BUFF_FEC_START + 5U);
+	}
 }
 
 /**
