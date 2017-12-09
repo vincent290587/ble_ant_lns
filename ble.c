@@ -41,6 +41,7 @@
 #include "ble_lns_c.h"
 #include "ant.h"
 #include "glasses.h"
+#include "spis_pages.h"
 
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
@@ -1031,8 +1032,6 @@ static void scan_start(void)
 	ret = sd_ble_gap_scan_start(&m_scan_param);
 	APP_ERROR_CHECK(ret);
 
-	ret = bsp_indication_set(BSP_INDICATE_SCANNING);
-	APP_ERROR_CHECK(ret);
 }
 
 

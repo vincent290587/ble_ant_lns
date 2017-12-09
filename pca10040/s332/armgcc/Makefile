@@ -67,7 +67,6 @@ CFLAGS += -fno-builtin -fshort-enums -nostdlib -fno-exceptions
 CXXFLAGS += $(OPT) -std=gnu++0x -felide-constructors -fno-exceptions -fno-rtti
 
 # Assembler flags common to all targets
-ASMFLAGS += -x assembler-with-cpp
 ASMFLAGS += -mcpu=cortex-m4
 ASMFLAGS += -mthumb -mabi=aapcs
 ASMFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16

@@ -2,6 +2,10 @@
 #include <string.h>
 #include "glasses.h"
 
+
+// glasses profile
+ant_glasses_profile_t       m_ant_glasses;
+
 uint8_t m_glasses_payload[8];
 
 /**

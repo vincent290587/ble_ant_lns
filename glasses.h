@@ -3,7 +3,9 @@
 #define GLASSES_H_
 
 #include "mk64f_parser.h"
+#include "ant_glasses.h"
 
+extern ant_glasses_profile_t       m_ant_glasses;
 
 extern uint8_t m_glasses_payload[8];
 

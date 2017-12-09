@@ -60,6 +60,21 @@ SRC_FILES += \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_bsc/pages/ant_bsc_page_3.c \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_bsc/pages/ant_bsc_page_4.c \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_bsc/pages/ant_bsc_page_5.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/ant_fec.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/utils/ant_fec_utils.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/pages/ant_fec_page_1.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/pages/ant_fec_page_2.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/pages/ant_fec_page_16.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/pages/ant_fec_page_17.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/pages/ant_fec_page_21.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/pages/ant_fec_page_25.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/pages/ant_fec_page_48.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/pages/ant_fec_page_49.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/pages/ant_fec_page_51.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/pages/ant_fec_page_54.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_common/pages/ant_common_page_71.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_common/pages/ant_common_page_80.c \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_common/pages/ant_common_page_81.c \
   $(SDK_ROOT)/external/segger_rtt/SEGGER_RTT_Syscalls_GCC.c \
   $(SDK_ROOT)/external/segger_rtt/SEGGER_RTT.c \
   $(SDK_ROOT)/external/segger_rtt/SEGGER_RTT_printf.c \
@@ -203,7 +218,11 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/drivers_nrf/usbd \
   $(SDK_ROOT)/components/ble/ble_services/ble_lns_c \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_glasses \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_common \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_common/pages \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_fec \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/pages \
+  $(SDK_ROOT)/components/ant/ant_profiles/ant_fec/utils \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_hrm \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_hrm/utils \
   $(SDK_ROOT)/components/ant/ant_profiles/ant_hrm/simulator \

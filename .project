@@ -581,11 +581,6 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>components/libraries/AdafruitGFX</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>components/libraries/atomic</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -667,11 +662,6 @@
 		</link>
 		<link>
 			<name>components/libraries/experimental_memobj</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/experimental_mpu</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -2101,96 +2091,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/drivers_nrf/wdt/nrf_drv_wdt.h</locationURI>
 		</link>
 		<link>
-			<name>components/libraries/AdafruitGFX/Adafruit_GFX.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Adafruit_GFX.cpp</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Adafruit_GFX.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Adafruit_GFX.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Print.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Print.cpp</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Print.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Print.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Printable.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Printable.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/README.md</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/README.md</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/WCharacter.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/WCharacter.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/WString.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/WString.cpp</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/WString.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/WString.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/avr_functions.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/avr_functions.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/core_id.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/core_id.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/fontconvert</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/gfxfont.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/gfxfont.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/glcdfont.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/glcdfont.c</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/library.properties</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/library.properties</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/license.txt</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/license.txt</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/pgmspace.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/pgmspace.h</locationURI>
-		</link>
-		<link>
 			<name>components/libraries/atomic/nrf_atomic.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/atomic/nrf_atomic.h</locationURI>
@@ -2771,14 +2671,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/experimental_memobj/nrf_memobj.h</locationURI>
 		</link>
 		<link>
-			<name>components/libraries/experimental_mpu/nrf_mpu.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/experimental_mpu/nrf_mpu.c</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/experimental_mpu/nrf_mpu.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/experimental_mpu/nrf_mpu.h</locationURI>
+			<name>components/libraries/experimental_ringbuf/experimental_mpu</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>components/libraries/experimental_ringbuf/nrf_ringbuf.c</name>
@@ -4326,276 +4221,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/drivers_nrf/twi_master/deprecated/twi_sw_master.c</locationURI>
 		</link>
 		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMono12pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMono12pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMono18pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMono18pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMono24pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMono24pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMono9pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMono9pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMonoBold12pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMonoBold12pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMonoBold18pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMonoBold18pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMonoBold24pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMonoBold24pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMonoBold9pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMonoBold9pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMonoBoldOblique12pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMonoBoldOblique12pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMonoBoldOblique18pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMonoBoldOblique18pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMonoBoldOblique24pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMonoBoldOblique24pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMonoBoldOblique9pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMonoBoldOblique9pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMonoOblique12pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMonoOblique12pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMonoOblique18pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMonoOblique18pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMonoOblique24pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMonoOblique24pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeMonoOblique9pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeMonoOblique9pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSans12pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSans12pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSans18pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSans18pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSans24pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSans24pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSans9pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSans9pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSansBold12pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSansBold12pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSansBold18pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSansBold18pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSansBold24pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSansBold24pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSansBold9pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSansBold9pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSansBoldOblique12pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSansBoldOblique12pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSansBoldOblique18pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSansBoldOblique18pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSansBoldOblique24pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSansBoldOblique24pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSansBoldOblique9pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSansBoldOblique9pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSansOblique12pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSansOblique12pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSansOblique18pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSansOblique18pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSansOblique24pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSansOblique24pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSansOblique9pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSansOblique9pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerif12pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerif12pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerif18pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerif18pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerif24pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerif24pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerif9pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerif9pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerifBold12pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerifBold12pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerifBold18pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerifBold18pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerifBold24pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerifBold24pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerifBold9pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerifBold9pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerifBoldItalic12pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerifBoldItalic12pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerifBoldItalic18pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerifBoldItalic18pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerifBoldItalic24pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerifBoldItalic24pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerifBoldItalic9pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerifBoldItalic9pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerifItalic12pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerifItalic12pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerifItalic18pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerifItalic18pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerifItalic24pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerifItalic24pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/FreeSerifItalic9pt7b.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/FreeSerifItalic9pt7b.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/Orbital7pt.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/Orbital7pt.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/Fonts/TomThumb.h</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/Fonts/TomThumb.h</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/fontconvert/Makefile</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/fontconvert/Makefile</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/fontconvert/fontconvert.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/fontconvert/fontconvert.c</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/fontconvert/fontconvert_win.md</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/fontconvert/fontconvert_win.md</locationURI>
-		</link>
-		<link>
-			<name>components/libraries/AdafruitGFX/fontconvert/makefonts.sh</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/AdafruitGFX/fontconvert/makefonts.sh</locationURI>
-		</link>
-		<link>
 			<name>components/libraries/block_dev/empty/nrf_block_dev_empty.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/block_dev/empty/nrf_block_dev_empty.c</locationURI>
@@ -4874,6 +4499,16 @@
 			<name>components/libraries/experimental_log/src/nrf_log_str_formatter.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/experimental_log/src/nrf_log_str_formatter.c</locationURI>
+		</link>
+		<link>
+			<name>components/libraries/experimental_ringbuf/experimental_mpu/nrf_mpu.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/experimental_mpu/nrf_mpu.c</locationURI>
+		</link>
+		<link>
+			<name>components/libraries/experimental_ringbuf/experimental_mpu/nrf_mpu.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/libraries/experimental_mpu/nrf_mpu.h</locationURI>
 		</link>
 		<link>
 			<name>components/libraries/hardfault/nrf51/handler</name>
@@ -5261,6 +4896,16 @@
 			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/ant/ant_profiles/ant_common/pages/ant_common_page_70.h</locationURI>
 		</link>
 		<link>
+			<name>components/ant/ant_profiles/ant_common/pages/ant_common_page_71.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/ant/ant_profiles/ant_common/pages/ant_common_page_71.c</locationURI>
+		</link>
+		<link>
+			<name>components/ant/ant_profiles/ant_common/pages/ant_common_page_71.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/ant/ant_profiles/ant_common/pages/ant_common_page_71.h</locationURI>
+		</link>
+		<link>
 			<name>components/ant/ant_profiles/ant_common/pages/ant_common_page_80.c</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/ant/ant_profiles/ant_common/pages/ant_common_page_80.c</locationURI>
@@ -5399,6 +5044,11 @@
 			<name>components/ant/ant_profiles/ant_fec/pages/not_used</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>components/ant/ant_profiles/ant_fec/utils/ant_fec_utils.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/nRF5_SDK_14.2/components/ant/ant_profiles/ant_fec/utils/ant_fec_utils.c</locationURI>
 		</link>
 		<link>
 			<name>components/ant/ant_profiles/ant_fec/utils/ant_fec_utils.h</name>

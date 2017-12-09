@@ -45,11 +45,13 @@
 #include "ant_key_manager.h"
 #include "ant_hrm.h"
 #include "ant_bsc.h"
+#include "ant_fec.h"
 #include "ant_glasses.h"
 #include "ant_interface.h"
 
 #include "spis_pages.h"
 #include "glasses.h"
+#include "fec.h"
 
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
@@ -78,21 +80,6 @@
                                      / BSC_MS_TO_KPH_DEN)                      /**< Coefficient for speed value calculation */
 
 
-#define WILDCARD_TRANSMISSION_TYPE      0x00
-#define ANTPLUS_NETWORK_NUMBER          0x00                                           /**< Network number. */
-
-#define HRM_CHANNEL_NUMBER              0x00  
-#define HRM_DEVICE_NUMBER               0x0D22    /**< Device Number. */
-
-#define BSC_CHANNEL_NUMBER              0x01     
-#define BSC_DEVICE_NUMBER               0xB02B    /**< Device Number. */    
-#define BSC_DEVICE_TYPE                 0x79
-
-#define GLASSES_CHANNEL_NUMBER          0x02                                            /**< Default ANT Channel. */
-
-#define ANTPLUS_NETWORK_NUMBER          0x00                                           /**< Network number. */
-
-
 APP_TIMER_DEF(m_sec_hrm);
 APP_TIMER_DEF(m_sec_bsc);
 
@@ -113,8 +100,6 @@ BSC_DISP_CHANNEL_CONFIG_DEF(m_ant_bsc,
 BSC_DISP_PROFILE_CONFIG_DEF(m_ant_bsc, ant_bsc_evt_handler);
 ant_bsc_profile_t m_ant_bsc;
 
-
-
 /** @snippet [ANT HRM RX Instance] */
 HRM_DISP_CHANNEL_CONFIG_DEF(m_ant_hrm,
 		HRM_CHANNEL_NUMBER,
@@ -124,16 +109,18 @@ HRM_DISP_CHANNEL_CONFIG_DEF(m_ant_hrm,
 		HRM_MSG_PERIOD_4Hz);
 ant_hrm_profile_t           m_ant_hrm;
 
+FEC_DISP_CHANNEL_CONFIG_DEF(m_ant_fec,
+		FEC_CHANNEL_NUMBER,
+		WILDCARD_TRANSMISSION_TYPE,
+		TACX_DEVICE_NUMBER,
+		ANTPLUS_NETWORK_NUMBER);
+FEC_DISP_PROFILE_CONFIG_DEF(m_ant_fec,
+		ant_fec_evt_handler);
 
-// glasses profile
-ant_glasses_profile_t       m_ant_glasses;
-const ant_channel_config_t  ant_tx_channel_config  = GLASSES_TX_CHANNEL_CONFIG(GLASSES_CHANNEL_NUMBER,
+
+const ant_channel_config_t  ant_glasses_channel_config  = GLASSES_TX_CHANNEL_CONFIG(GLASSES_CHANNEL_NUMBER,
 		                            GLASSES_DEVICE_NUMBER, ANTPLUS_NETWORK_NUMBER);
 
-//NRF_SDH_ANT_OBSERVER(m_bsc_ant_observer, ANT_BSC_ANT_OBSERVER_PRIO,
-//                     ant_bsc_disp_evt_handler, NULL);
-//NRF_SDH_ANT_OBSERVER(m_hrm_ant_observer, ANT_BSC_ANT_OBSERVER_PRIO,
-//                     ant_hrm_disp_evt_handler, NULL);
 
 typedef struct
 {
@@ -194,7 +181,7 @@ void ant_evt_bsc (ant_evt_t * p_ant_evt)
 		if (!is_cad_init) {
 			sd_ant_channel_id_get (BSC_CHANNEL_NUMBER,
 					&pusDeviceNumber, &pucDeviceType, &pucTransmitType);
-			printf("$ANCS,0,CAD 0x%x connected\n\r", pusDeviceNumber);
+//			printf("$ANCS,0,CAD 0x%x connected\n\r", pusDeviceNumber);
 			if (pusDeviceNumber) {
 				is_cad_init = 1;
 
@@ -238,7 +225,7 @@ void ant_evt_hrm (ant_evt_t * p_ant_evt)
 		if (!is_hrm_init) {
 			sd_ant_channel_id_get (HRM_CHANNEL_NUMBER,
 					&pusDeviceNumber, &pucDeviceType, &pucTransmitType);
-			printf("$ANCS,0,HRM 0x%x connected\n\r", pusDeviceNumber);
+//			printf("$ANCS,0,HRM 0x%x connected\n\r", pusDeviceNumber);
 			if (pusDeviceNumber) is_hrm_init = 1;
 		}
 		NRF_LOG_INFO("HRM RX\r\n");
@@ -282,6 +269,10 @@ void ant_evt_handler(ant_evt_t * p_ant_evt, void * p_context)
 
 	case GLASSES_CHANNEL_NUMBER:
 		ant_evt_glasses (p_ant_evt);
+		break;
+
+	case FEC_CHANNEL_NUMBER:
+		ant_evt_fec (p_ant_evt);
 		break;
 
 	default:
@@ -505,6 +496,8 @@ void ant_timers_init(void)
 	err_code = app_timer_create(&m_sec_bsc, APP_TIMER_MODE_SINGLE_SHOT, bsc_connect);
 	APP_ERROR_CHECK(err_code);
 
+	fec_init();
+
 }
 
 
@@ -560,10 +553,19 @@ static void ant_profile_setup(void)
 	APP_ERROR_CHECK(err_code);
 
 	// GLASSES
-	err_code = ant_glasses_init(&m_ant_glasses, &ant_tx_channel_config);
+	err_code = ant_glasses_init(&m_ant_glasses, &ant_glasses_channel_config);
 	APP_ERROR_CHECK(err_code);
 
 	err_code = ant_glasses_open(&m_ant_glasses);
+	APP_ERROR_CHECK(err_code);
+
+	//FEC
+	err_code = ant_fec_disp_init(&m_ant_fec,
+			FEC_DISP_CHANNEL_CONFIG(m_ant_fec),
+			FEC_DISP_PROFILE_CONFIG(m_ant_fec));
+	APP_ERROR_CHECK(err_code);
+
+	err_code = ant_fec_disp_open(&m_ant_fec);
 	APP_ERROR_CHECK(err_code);
 
 	/** @snippet [ANT HRM RX Profile Setup] */

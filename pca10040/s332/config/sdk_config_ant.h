@@ -2,6 +2,406 @@
 
 // <h> nRF_ANT 
 
+
+#ifndef ANT_COMMON_PAGE_71_ENABLED
+#define ANT_COMMON_PAGE_71_ENABLED 1
+#endif
+#if  ANT_COMMON_PAGE_71_ENABLED
+#ifndef ANT_COMMON_PAGE_71_LOG_ENABLED
+#define ANT_COMMON_PAGE_71_LOG_ENABLED 1
+#endif
+#if  ANT_COMMON_PAGE_71_LOG_ENABLED
+// <o> ANT_COMMON_PAGE_71_LOG_LEVEL  - Default Severity level
+
+// <0=> Off
+// <1=> Error
+// <2=> Warning
+// <3=> Info
+// <4=> Debug
+
+#ifndef ANT_COMMON_PAGE_71_LOG_LEVEL
+#define ANT_COMMON_PAGE_71_LOG_LEVEL 3
+#endif
+
+// <o> ANT_COMMON_PAGE_71_INFO_COLOR  - ANSI escape code prefix.
+
+// <0=> Default
+// <1=> Black
+// <2=> Red
+// <3=> Green
+// <4=> Yellow
+// <5=> Blue
+// <6=> Magenta
+// <7=> Cyan
+// <8=> White
+
+#ifndef ANT_COMMON_PAGE_71_INFO_COLOR
+#define ANT_COMMON_PAGE_71_INFO_COLOR 0
+#endif
+
+#endif //ANT_COMMON_PAGE_71_LOG_ENABLED
+// </e>
+
+#endif //ANT_COMMON_PAGE_71_ENABLED
+// </e>
+
+// <e> ANT_COMMON_PAGE_80_ENABLED - ant_common_page_80 - ANT+ common page 80
+//==========================================================
+#ifndef ANT_COMMON_PAGE_80_ENABLED
+#define ANT_COMMON_PAGE_80_ENABLED 1
+#endif
+#if  ANT_COMMON_PAGE_80_ENABLED
+// <e> ANT_COMMON_PAGE_80_LOG_ENABLED - Enables logging of common page 80 in the module.
+//==========================================================
+#ifndef ANT_COMMON_PAGE_80_LOG_ENABLED
+#define ANT_COMMON_PAGE_80_LOG_ENABLED 1
+#endif
+#if  ANT_COMMON_PAGE_80_LOG_ENABLED
+// <o> ANT_COMMON_PAGE_80_LOG_LEVEL  - Default Severity level
+
+// <0=> Off
+// <1=> Error
+// <2=> Warning
+// <3=> Info
+// <4=> Debug
+
+#ifndef ANT_COMMON_PAGE_80_LOG_LEVEL
+#define ANT_COMMON_PAGE_80_LOG_LEVEL 3
+#endif
+
+// <o> ANT_COMMON_PAGE_80_INFO_COLOR  - ANSI escape code prefix.
+
+// <0=> Default
+// <1=> Black
+// <2=> Red
+// <3=> Green
+// <4=> Yellow
+// <5=> Blue
+// <6=> Magenta
+// <7=> Cyan
+// <8=> White
+
+#ifndef ANT_COMMON_PAGE_80_INFO_COLOR
+#define ANT_COMMON_PAGE_80_INFO_COLOR 0
+#endif
+
+#endif //ANT_COMMON_PAGE_80_LOG_ENABLED
+// </e>
+
+#endif //ANT_COMMON_PAGE_80_ENABLED
+// </e>
+
+// <e> ANT_COMMON_PAGE_81_ENABLED - ant_common_page_81 - ANT+ common page 81
+//==========================================================
+#ifndef ANT_COMMON_PAGE_81_ENABLED
+#define ANT_COMMON_PAGE_81_ENABLED 1
+#endif
+#if  ANT_COMMON_PAGE_81_ENABLED
+// <e> ANT_COMMON_PAGE_81_LOG_ENABLED - Enables logging of common page 81 in the module.
+//==========================================================
+#ifndef ANT_COMMON_PAGE_81_LOG_ENABLED
+#define ANT_COMMON_PAGE_81_LOG_ENABLED 1
+#endif
+#if  ANT_COMMON_PAGE_81_LOG_ENABLED
+// <o> ANT_COMMON_PAGE_81_LOG_LEVEL  - Default Severity level
+
+// <0=> Off
+// <1=> Error
+// <2=> Warning
+// <3=> Info
+// <4=> Debug
+
+#ifndef ANT_COMMON_PAGE_81_LOG_LEVEL
+#define ANT_COMMON_PAGE_81_LOG_LEVEL 3
+#endif
+
+// <o> ANT_COMMON_PAGE_81_INFO_COLOR  - ANSI escape code prefix.
+
+// <0=> Default
+// <1=> Black
+// <2=> Red
+// <3=> Green
+// <4=> Yellow
+// <5=> Blue
+// <6=> Magenta
+// <7=> Cyan
+// <8=> White
+
+#ifndef ANT_COMMON_PAGE_81_INFO_COLOR
+#define ANT_COMMON_PAGE_81_INFO_COLOR 0
+#endif
+
+#endif //ANT_COMMON_PAGE_81_LOG_ENABLED
+// </e>
+
+#endif //ANT_COMMON_PAGE_81_ENABLED
+// </e>
+
+
+//==========================================================
+// <e> ANT_FEC_ENABLED - ant_bpwr - Bicycle Power Profile
+//==========================================================
+#ifndef ANT_FEC_ENABLED
+#define ANT_FEC_ENABLED 1
+#endif
+#if  ANT_FEC_ENABLED
+// <e> ANT_FEC_LOG_ENABLED - Enables general logging in the module.
+//==========================================================
+#ifndef ANT_FEC_LOG_ENABLED
+#define ANT_FEC_LOG_ENABLED 1
+#endif
+#if  ANT_FEC_LOG_ENABLED
+// <o> ANT_FEC_LOG_LEVEL  - Default Severity level
+
+// <0=> Off
+// <1=> Error
+// <2=> Warning
+// <3=> Info
+// <4=> Debug
+
+#ifndef ANT_FEC_LOG_LEVEL
+#define ANT_FEC_LOG_LEVEL 3
+#endif
+
+// <o> ANT_FEC_INFO_COLOR  - ANSI escape code prefix.
+
+// <0=> Default
+// <1=> Black
+// <2=> Red
+// <3=> Green
+// <4=> Yellow
+// <5=> Blue
+// <6=> Magenta
+// <7=> Cyan
+// <8=> White
+
+#ifndef ANT_FEC_INFO_COLOR
+#define ANT_FEC_INFO_COLOR 0
+#endif
+
+#endif //ANT_FEC_LOG_ENABLED
+// </e>
+
+// <e> ANT_FEC_COMMON_LOG_ENABLED - Enables logging of FEC tracing common data.
+//==========================================================
+#ifndef ANT_FEC_COMMON_LOG_ENABLED
+#define ANT_FEC_COMMON_LOG_ENABLED 0
+#endif
+#if  ANT_FEC_COMMON_LOG_ENABLED
+// <o> ANT_FEC_COMMON_LOG_LEVEL  - Default Severity level
+
+// <0=> Off
+// <1=> Error
+// <2=> Warning
+// <3=> Info
+// <4=> Debug
+
+#ifndef ANT_FEC_COMMON_LOG_LEVEL
+#define ANT_FEC_COMMON_LOG_LEVEL 3
+#endif
+
+// <o> ANT_FEC_COMMON_INFO_COLOR  - ANSI escape code prefix.
+
+// <0=> Default
+// <1=> Black
+// <2=> Red
+// <3=> Green
+// <4=> Yellow
+// <5=> Blue
+// <6=> Magenta
+// <7=> Cyan
+// <8=> White
+
+#ifndef ANT_FEC_COMMON_INFO_COLOR
+#define ANT_FEC_COMMON_INFO_COLOR 0
+#endif
+
+#endif //ANT_FEC_COMMON_LOG_ENABLED
+// </e>
+
+#ifndef ANT_FEC_PAGE_2_LOG_ENABLED
+#define ANT_FEC_PAGE_2_LOG_ENABLED 1
+#endif
+
+#ifndef ANT_FEC_PAGE_21_LOG_ENABLED
+#define ANT_FEC_PAGE_21_LOG_ENABLED 1
+#endif
+
+#ifndef ANT_FEC_PAGE_25_LOG_ENABLED
+#define ANT_FEC_PAGE_25_LOG_ENABLED 1
+#endif
+
+#ifndef ANT_FEC_PAGE_48_LOG_ENABLED
+#define ANT_FEC_PAGE_48_LOG_ENABLED 1
+#endif
+
+#ifndef ANT_FEC_PAGE_49_LOG_ENABLED
+#define ANT_FEC_PAGE_49_LOG_ENABLED 1
+#endif
+
+#ifndef ANT_FEC_PAGE_51_LOG_ENABLED
+#define ANT_FEC_PAGE_51_LOG_ENABLED 1
+#endif
+
+#ifndef ANT_FEC_PAGE_55_LOG_ENABLED
+#define ANT_FEC_PAGE_55_LOG_ENABLED 1
+#endif
+
+#ifndef ANT_FEC_PAGE_71_LOG_ENABLED
+#define ANT_FEC_PAGE_71_LOG_ENABLED 1
+#endif
+
+// <e> ANT_FEC_PAGE_1_LOG_ENABLED - Enables logging of FEC page 1 in the module.
+//==========================================================
+#ifndef ANT_FEC_PAGE_1_LOG_ENABLED
+#define ANT_FEC_PAGE_1_LOG_ENABLED 1
+#endif
+#if  ANT_FEC_PAGE_1_LOG_ENABLED
+// <o> ANT_FEC_PAGE_1_LOG_LEVEL  - Default Severity level
+
+// <0=> Off
+// <1=> Error
+// <2=> Warning
+// <3=> Info
+// <4=> Debug
+
+#ifndef ANT_FEC_PAGE_1_LOG_LEVEL
+#define ANT_FEC_PAGE_1_LOG_LEVEL 3
+#endif
+
+// <o> ANT_FEC_PAGE_1_INFO_COLOR  - ANSI escape code prefix.
+
+// <0=> Default
+// <1=> Black
+// <2=> Red
+// <3=> Green
+// <4=> Yellow
+// <5=> Blue
+// <6=> Magenta
+// <7=> Cyan
+// <8=> White
+
+#ifndef ANT_FEC_PAGE_1_INFO_COLOR
+#define ANT_FEC_PAGE_1_INFO_COLOR 0
+#endif
+
+#endif //ANT_FEC_PAGE_1_LOG_ENABLED
+// </e>
+
+// <e> ANT_FEC_PAGE_16_LOG_ENABLED - Enables logging of FEC page 16 in the module.
+//==========================================================
+#ifndef ANT_FEC_PAGE_16_LOG_ENABLED
+#define ANT_FEC_PAGE_16_LOG_ENABLED 1
+#endif
+#if  ANT_FEC_PAGE_16_LOG_ENABLED
+// <o> ANT_FEC_PAGE_16_LOG_LEVEL  - Default Severity level
+
+// <0=> Off
+// <1=> Error
+// <2=> Warning
+// <3=> Info
+// <4=> Debug
+
+#ifndef ANT_FEC_PAGE_16_LOG_LEVEL
+#define ANT_FEC_PAGE_16_LOG_LEVEL 3
+#endif
+
+// <o> ANT_FEC_PAGE_16_INFO_COLOR  - ANSI escape code prefix.
+
+// <0=> Default
+// <1=> Black
+// <2=> Red
+// <3=> Green
+// <4=> Yellow
+// <5=> Blue
+// <6=> Magenta
+// <7=> Cyan
+// <8=> White
+
+#ifndef ANT_FEC_PAGE_16_INFO_COLOR
+#define ANT_FEC_PAGE_16_INFO_COLOR 0
+#endif
+
+#endif //ANT_FEC_PAGE_16_LOG_ENABLED
+// </e>
+
+// <e> ANT_FEC_PAGE_17_LOG_ENABLED - Enables logging of FEC page 17 in the module.
+//==========================================================
+#ifndef ANT_FEC_PAGE_17_LOG_ENABLED
+#define ANT_FEC_PAGE_17_LOG_ENABLED 1
+#endif
+#if  ANT_FEC_PAGE_17_LOG_ENABLED
+// <o> ANT_FEC_PAGE_17_LOG_LEVEL  - Default Severity level
+
+// <0=> Off
+// <1=> Error
+// <2=> Warning
+// <3=> Info
+// <4=> Debug
+
+#ifndef ANT_FEC_PAGE_17_LOG_LEVEL
+#define ANT_FEC_PAGE_17_LOG_LEVEL 3
+#endif
+
+// <o> ANT_FEC_PAGE_17_INFO_COLOR  - ANSI escape code prefix.
+
+// <0=> Default
+// <1=> Black
+// <2=> Red
+// <3=> Green
+// <4=> Yellow
+// <5=> Blue
+// <6=> Magenta
+// <7=> Cyan
+// <8=> White
+
+#ifndef ANT_FEC_PAGE_17_INFO_COLOR
+#define ANT_FEC_PAGE_17_INFO_COLOR 0
+#endif
+
+#endif //ANT_FEC_PAGE_17_LOG_ENABLED
+// </e>
+
+// <e> ANT_FEC_PAGE_21_LOG_ENABLED - Enables logging of FEC page 18 in the module.
+//==========================================================
+#ifndef ANT_FEC_PAGE_21_LOG_ENABLED
+#define ANT_FEC_PAGE_21_LOG_ENABLED 1
+#endif
+#if  ANT_FEC_PAGE_21_LOG_ENABLED
+// <o> ANT_FEC_PAGE_21_LOG_LEVEL  - Default Severity level
+
+// <0=> Off
+// <1=> Error
+// <2=> Warning
+// <3=> Info
+// <4=> Debug
+
+#ifndef ANT_FEC_PAGE_21_LOG_LEVEL
+#define ANT_FEC_PAGE_21_LOG_LEVEL 3
+#endif
+
+// <o> ANT_FEC_PAGE_21_INFO_COLOR  - ANSI escape code prefix.
+
+// <0=> Default
+// <1=> Black
+// <2=> Red
+// <3=> Green
+// <4=> Yellow
+// <5=> Blue
+// <6=> Magenta
+// <7=> Cyan
+// <8=> White
+
+#ifndef ANT_FEC_PAGE_21_INFO_COLOR
+#define ANT_FEC_PAGE_21_INFO_COLOR 0
+#endif
+
+#endif //ANT_FEC_PAGE_21_LOG_ENABLED
+// </e>
+
+#endif //ANT_FEC_ENABLED
+// </e>
+
 //==========================================================
 // <e> ANT_BSC_ENABLED - ant_bsc - Bicycle Speed and Cadence Profile
 //==========================================================
@@ -583,7 +983,7 @@
 //==========================================================
 // <o> NRF_SDH_ANT_TOTAL_CHANNELS_ALLOCATED - Allocated ANT channels. 
 #ifndef NRF_SDH_ANT_TOTAL_CHANNELS_ALLOCATED
-#define NRF_SDH_ANT_TOTAL_CHANNELS_ALLOCATED 3
+#define NRF_SDH_ANT_TOTAL_CHANNELS_ALLOCATED 4
 #endif
 
 // <o> NRF_SDH_ANT_ENCRYPTED_CHANNELS - Encrypted ANT channels. 
