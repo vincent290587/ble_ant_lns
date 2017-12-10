@@ -43,13 +43,17 @@ void backlighting_set_control(sBacklightOrders* control) {
 
 	if (control->state && control->freq) {
 
-		// start to blink
-		uint32_t ticks = APP_TIMER_TICKS(control->freq * 10);
+		if (m_timer_is_off) {
 
-		uint32_t err_code = app_timer_start(m_back_timer, ticks, NULL);
-		APP_ERROR_CHECK(err_code);
+			m_timer_is_off = false;
 
-		m_timer_is_off = false;
+			// start to blink
+			uint32_t ticks = APP_TIMER_TICKS(control->freq * 10);
+
+			uint32_t err_code = app_timer_start(m_back_timer, ticks, NULL);
+			APP_ERROR_CHECK(err_code);
+
+		}
 
 	} else if (control->state) {
 
