@@ -30,6 +30,7 @@ APP_TIMER_DEF(m_fec_update);
 
 static bool is_fec_init = 0;
 
+static void roller_manager(void * p_context);
 
 /**
  *
@@ -40,6 +41,13 @@ void ant_evt_fec (ant_evt_t * p_ant_evt)
 
 	switch (p_ant_evt->event)
 	{
+	case EVENT_TX:
+	case EVENT_TRANSFER_TX_COMPLETED:
+
+		break;
+	case EVENT_TRANSFER_TX_FAILED:
+		NRF_LOG_WARNING("ANT FEC TX failed");
+		break;
 	case EVENT_RX:
 		if (!is_fec_init) {
 			uint16_t pusDeviceNumber = 0;
@@ -51,8 +59,8 @@ void ant_evt_fec (ant_evt_t * p_ant_evt)
 			if (pusDeviceNumber) {
 				is_fec_init = 1;
 
-				err_code = app_timer_start(m_fec_update, FEC_CONTROL_DELAY, &m_fec_control);
-				APP_ERROR_CHECK(err_code);
+//				err_code = app_timer_start(m_fec_update, FEC_CONTROL_DELAY, &m_fec_control);
+//				APP_ERROR_CHECK(err_code);
 			}
 		}
 		ant_fec_disp_evt_handler(p_ant_evt, &m_ant_fec);
@@ -62,11 +70,13 @@ void ant_evt_fec (ant_evt_t * p_ant_evt)
 	case EVENT_RX_FAIL_GO_TO_SEARCH:
 		break;
 	case EVENT_RX_SEARCH_TIMEOUT:
+		NRF_LOG_WARNING("ANT FEC EVENT_RX_SEARCH_TIMEOUT");
 		break;
 	case EVENT_CHANNEL_CLOSED:
-		is_fec_init = 0;
-		err_code = app_timer_stop(m_fec_update);
-		APP_ERROR_CHECK(err_code);
+		NRF_LOG_WARNING("ANT FEC EVENT_CHANNEL_CLOSED");
+		break;
+	default:
+		NRF_LOG_WARNING("ANT FEC event %02X", p_ant_evt->event);
 		break;
 	}
 
@@ -100,6 +110,8 @@ void ant_fec_evt_handler(ant_fec_profile_t * p_profile, ant_fec_evt_t event)
 	case ANT_FEC_PAGE_25_UPDATED:
 		m_fec_spis_info.power = p_profile->page_25.inst_power;
 		spis_encode_fec(&m_fec_spis_info);
+		// send info to the trainer
+		roller_manager(&m_fec_control);
 		break;
 
 	case ANT_FEC_PAGE_17_UPDATED:

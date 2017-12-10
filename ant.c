@@ -43,6 +43,7 @@
 
 #include "ant_stack_config.h"
 #include "ant_key_manager.h"
+#include "ant_search_config.h"
 #include "ant_hrm.h"
 #include "ant_bsc.h"
 #include "ant_fec.h"
@@ -60,7 +61,7 @@
 
 #define GPIO_BUTTON                     30
 
-#define ANT_DELAY                       APP_TIMER_TICKS(10000)
+#define ANT_DELAY                       APP_TIMER_TICKS(30000)
 
 
 #define APP_ANT_OBSERVER_PRIO       1                                                               /**< Application's ANT observer priority. You shouldn't need to modify this value. */
@@ -533,6 +534,13 @@ static void ant_profile_setup(void)
 {
 	/** @snippet [ANT HRM RX Profile Setup] */
 	uint32_t err_code;
+    ant_search_config_t ant_search_config   = DEFAULT_ANT_SEARCH_CONFIG(0);
+
+    // Disable high priority search to minimize disruption to other channels while searching
+    ant_search_config.high_priority_timeout = ANT_HIGH_PRIORITY_SEARCH_DISABLE;
+    ant_search_config.low_priority_timeout  = 20;
+    ant_search_config.search_sharing_cycles = 0x10;
+    ant_search_config.search_priority       = ANT_SEARCH_PRIORITY_LOWEST;
 
 	// HRM
 	err_code = ant_hrm_disp_init(&m_ant_hrm,
@@ -540,8 +548,9 @@ static void ant_profile_setup(void)
 			ant_hrm_evt_handler);
 	APP_ERROR_CHECK(err_code);
 
-	err_code = ant_hrm_disp_open(&m_ant_hrm);
-	APP_ERROR_CHECK(err_code);
+	ant_search_config.channel_number = HRM_CHANNEL_NUMBER;
+    err_code = ant_search_init(&ant_search_config);
+    APP_ERROR_CHECK(err_code);
 
 	// CAD
 	err_code = ant_bsc_disp_init(&m_ant_bsc,
@@ -549,15 +558,18 @@ static void ant_profile_setup(void)
 			BSC_DISP_PROFILE_CONFIG(m_ant_bsc));
 	APP_ERROR_CHECK(err_code);
 
-	err_code = ant_bsc_disp_open(&m_ant_bsc);
-	APP_ERROR_CHECK(err_code);
+	ant_search_config.channel_number = BSC_CHANNEL_NUMBER;
+    err_code = ant_search_init(&ant_search_config);
+    APP_ERROR_CHECK(err_code);
+
 
 	// GLASSES
 	err_code = ant_glasses_init(&m_ant_glasses, &ant_glasses_channel_config);
 	APP_ERROR_CHECK(err_code);
 
-	err_code = ant_glasses_open(&m_ant_glasses);
-	APP_ERROR_CHECK(err_code);
+	ant_search_config.channel_number = GLASSES_CHANNEL_NUMBER;
+    err_code = ant_search_init(&ant_search_config);
+    APP_ERROR_CHECK(err_code);
 
 	//FEC
 	err_code = ant_fec_disp_init(&m_ant_fec,
@@ -565,10 +577,24 @@ static void ant_profile_setup(void)
 			FEC_DISP_PROFILE_CONFIG(m_ant_fec));
 	APP_ERROR_CHECK(err_code);
 
+	ant_search_config.channel_number = FEC_CHANNEL_NUMBER;
+    err_code = ant_search_init(&ant_search_config);
+    APP_ERROR_CHECK(err_code);
+
+    // Open the ANT channels
+
+	err_code = ant_hrm_disp_open(&m_ant_hrm);
+	APP_ERROR_CHECK(err_code);
+
+	err_code = ant_bsc_disp_open(&m_ant_bsc);
+	APP_ERROR_CHECK(err_code);
+
 	err_code = ant_fec_disp_open(&m_ant_fec);
 	APP_ERROR_CHECK(err_code);
 
-	/** @snippet [ANT HRM RX Profile Setup] */
+//	err_code = ant_glasses_open(&m_ant_glasses);
+//	APP_ERROR_CHECK(err_code);
+
 }
 
 
