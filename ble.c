@@ -725,42 +725,23 @@ static void lns_c_evt_handler(ble_lns_c_t * p_lns_c, ble_lns_c_evt_t * p_lns_c_e
 
 	case BLE_LNS_C_EVT_LNS_NOTIFICATION:
 	{
-		NRF_LOG_INFO("Latitude = %ld", p_lns_c_evt->params.lns.lat);
+		sLnsInfo lns_info;
+
+		lns_info.lat = p_lns_c_evt->params.lns.lat;
+		lns_info.lon = p_lns_c_evt->params.lns.lon;
+		lns_info.ele = 0;
+
+		NRF_LOG_INFO("Latitude  = %ld", p_lns_c_evt->params.lns.lat);
 		NRF_LOG_INFO("Longitude = %ld", p_lns_c_evt->params.lns.lon);
 
-		// smart technique to go from uint24 to int24 ;-)
-//		uint32_t tmp_ele = (((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[0]) << 8)  |
-//				(((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[1]) << 16)  |
-//				(((uint32_t)((uint8_t *)p_lns_c_evt->params.lns.ele.p_data)[2]) << 24);
-//		int32_t elev = ((int32_t) (tmp_ele)) >> 8;
+		NRF_LOG_INFO("Ele %ld", p_lns_c_evt->params.lns.ele);
 
-//		uint32_t tmp_ele = uint24_decode(p_lns_c_evt->params.lns.ele.p_data) << 8;
-//		int32_t elev = ((int32_t) (tmp_ele));
-//		elev = elev / 0xFFFF;
+		lns_info.secj = p_lns_c_evt->params.lns.utc_time.seconds;
+		lns_info.secj += p_lns_c_evt->params.lns.utc_time.minutes * 60;
+		lns_info.secj += p_lns_c_evt->params.lns.utc_time.hours * 3600;
 
-		uint16_t tmp_ele = uint16_decode(p_lns_c_evt->params.lns.ele.p_data+1);
-		int16_t elev = ((int16_t) (tmp_ele));
-		elev = elev / 0xFF;
-
-		NRF_LOG_INFO("Ele %ld %08X - %02X %02X %02X", (int32_t)elev, tmp_ele,
-				p_lns_c_evt->params.lns.ele.p_data[2],
-				p_lns_c_evt->params.lns.ele.p_data[1],
-				p_lns_c_evt->params.lns.ele.p_data[0]);
-//		if (elev == -65264) {
-//			elev = 0;
-//		}
-
-		uint32_t sec_jour = p_lns_c_evt->params.lns.utc_time.seconds;
-		sec_jour += p_lns_c_evt->params.lns.utc_time.minutes * 60;
-		// summer time
-		sec_jour += (p_lns_c_evt->params.lns.utc_time.hours - 2) * 3600;
-
-		uint16_t speed = p_lns_c_evt->params.lns.inst_speed;
-		NRF_LOG_INFO("Speed = %u", speed);
-
-		// limit to 70km/h
-		if (speed > 70 * 100 / 3.6) {
-			speed = 0;
+		if (p_lns_c_evt->params.lns.flags & ELE_PRESENT) {
+			lns_info.ele = (float)p_lns_c_evt->params.lns.ele / 100.;
 		}
 
 		NRF_LOG_INFO("Sec jour = %d %d %d\r\n", p_lns_c_evt->params.lns.utc_time.hours,
@@ -769,12 +750,6 @@ static void lns_c_evt_handler(ble_lns_c_t * p_lns_c, ble_lns_c_evt_t * p_lns_c_e
 
 //		printf("$LOC,%lu,%ld,%ld,%ld,%u", sec_jour,
 //				p_lns_c_evt->params.lns.lat, p_lns_c_evt->params.lns.lon, elev, speed);
-
-		sLnsInfo lns_info;
-		lns_info.lat = p_lns_c_evt->params.lns.lat;
-		lns_info.lon = p_lns_c_evt->params.lns.lon;
-		lns_info.ele = elev;
-		lns_info.secj = sec_jour;
 
 		spis_encode_lns(&lns_info);
 
