@@ -13,6 +13,7 @@
 #include "i2c.h"
 #include "spis.h"
 #include "notifications.h"
+#include "backlighting.h"
 #include "helper.h"
 #include "bsp.h"
 #include "bsp_btn_ble.h"
@@ -30,10 +31,6 @@
 
 #define DEAD_BEEF           0xDEADBEEF                                  /**< Value used as error code on stack dump. Can be used to identify stack location on stack unwind. */
 
-#define LDO_PIN             30
-#define NEO_PIN             7
-#define LED_PIN             14    // 8 ou 14
-#define AT42_COUT           18
 #define APP_DELAY           APP_TIMER_TICKS(100)
 
 #define SCHED_MAX_EVENT_DATA_SIZE      APP_TIMER_SCHED_EVENT_DATA_SIZE              /**< Maximum size of scheduler events. */
@@ -173,7 +170,6 @@ int main(void)
 	nrf_gpio_cfg_input(AT42_COUT, NRF_GPIO_PIN_PULLUP);
 
 	nrf_gpio_cfg_output(LDO_PIN);
-	nrf_gpio_cfg_output(LED_PIN);
 
 	nrf_gpio_pin_clear(LDO_PIN);
 
@@ -193,6 +189,8 @@ int main(void)
 	APP_ERROR_CHECK(err_code);
 
 	ant_timers_init();
+
+	backlighting_init();
 
 	//buttons_leds_init();
 

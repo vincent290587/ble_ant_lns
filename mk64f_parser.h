@@ -59,6 +59,11 @@ typedef struct {
 	uControlPages   data;
 } sFecControl;
 
+typedef struct {
+	uint8_t  state;
+	uint8_t  freq;
+} sBacklightOrders;
+
 ////////////// TX SPIS
 
 typedef struct {
@@ -91,6 +96,7 @@ typedef struct {
 	sGlassesOrders  glasses_info;
 	sNeopixelOrders neo_info;
 	sFecControl     fec_info;
+	sBacklightOrders back_info;
 } sSpisRxInfoPage0;
 
 typedef struct {
