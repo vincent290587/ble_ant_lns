@@ -14,6 +14,7 @@
 #include "spis.h"
 #include "notifications.h"
 #include "backlighting.h"
+#include "mk64f_parser.h"
 #include "helper.h"
 #include "bsp.h"
 #include "bsp_btn_ble.h"
@@ -128,16 +129,13 @@ static void bsp_evt_handler(bsp_event_t evt)
 	switch (evt)
 	{
 	case BSP_EVENT_KEY_0:
-		// TODO
-//		printf("$BTN,0\n\r");
+		mk64f_toggle_line(eMk64fRightButton);
 		break;
 	case BSP_EVENT_KEY_1:
-		// TODO
-//		printf("$BTN,1\n\r");
+		mk64f_toggle_line(eMk64fCentralButton);
 		break;
 	case BSP_EVENT_KEY_2:
-		// TODO
-//		printf("$BTN,2\n\r");
+		mk64f_toggle_line(eMk64fLeftButton);
 		break;
 	default:
 		return; // no implementation needed
@@ -152,11 +150,8 @@ static void bsp_evt_handler(bsp_event_t evt)
  */
 static void buttons_leds_init(void)
 {
-	uint32_t err_code = bsp_init(BSP_INIT_BUTTONS | BSP_INIT_LED,
-			bsp_evt_handler);
-
+	uint32_t err_code = bsp_init(BSP_INIT_BUTTONS, bsp_evt_handler);
 	APP_ERROR_CHECK(err_code);
-
 }
 
 /**
@@ -170,8 +165,10 @@ int main(void)
 	nrf_gpio_cfg_input(AT42_COUT, NRF_GPIO_PIN_PULLUP);
 
 	nrf_gpio_cfg_output(LDO_PIN);
-
 	nrf_gpio_pin_clear(LDO_PIN);
+
+	nrf_gpio_cfg_output(INT_PIN);
+	nrf_gpio_pin_clear(INT_PIN);
 
 	nrf_delay_ms(500);
 
@@ -192,7 +189,7 @@ int main(void)
 
 	backlighting_init();
 
-	//buttons_leds_init();
+	buttons_leds_init();
 
 	// init BLE + ANT
 	ble_ant_init();
@@ -213,15 +210,18 @@ int main(void)
 		if (job_to_do) {
 			job_to_do = false;
 
-			NRF_LOG_INFO("Job");
+			NRF_LOG_DEBUG("Job");
 
 			// TODO job
-			notifications_tasks();
+			if (notifications_tasks()) {
+			}
 		}
 
 		app_sched_execute();
 
 		//spis_tasks();
+
+		backlighting_tasks();
 
 		if (NRF_LOG_PROCESS() == false)
 		{

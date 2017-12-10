@@ -79,6 +79,7 @@ extern "C" {
                                  .accuracy     = NRF_CLOCK_LF_ACCURACY_20_PPM}
 
 
+#define INT_PIN             4
 #define LDO_PIN             30
 #define NEO_PIN             7
 #define LED_PIN             14

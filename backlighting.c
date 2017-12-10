@@ -14,12 +14,15 @@
 
 APP_TIMER_DEF(m_back_timer);
 
+static uint32_t m_ticks = 0;
+
 static volatile bool m_timer_is_off = 0;
 
 
 static void _backlight_callback(void* p_context) {
 
 	m_timer_is_off = true;
+	nrf_gpio_pin_toggle(LED_PIN);
 
 }
 
@@ -36,24 +39,34 @@ void backlighting_init(void) {
 
 }
 
+/**
+ *
+ */
+void backlighting_tasks(void) {
 
+	if (m_ticks && m_timer_is_off) {
+
+		m_timer_is_off = false;
+
+		uint32_t err_code = app_timer_start(m_back_timer, m_ticks, NULL);
+		APP_ERROR_CHECK(err_code);
+
+	}
+}
+
+/**
+ *
+ * @param control
+ */
 void backlighting_set_control(sBacklightOrders* control) {
 
 	ASSERT(control);
 
+	m_ticks = 0;
+
 	if (control->state && control->freq) {
 
-		if (m_timer_is_off) {
-
-			m_timer_is_off = false;
-
-			// start to blink
-			uint32_t ticks = APP_TIMER_TICKS(control->freq * 10);
-
-			uint32_t err_code = app_timer_start(m_back_timer, ticks, NULL);
-			APP_ERROR_CHECK(err_code);
-
-		}
+		m_ticks = APP_TIMER_TICKS(control->freq * 10);
 
 	} else if (control->state) {
 
@@ -67,3 +80,4 @@ void backlighting_set_control(sBacklightOrders* control) {
 	}
 
 }
+

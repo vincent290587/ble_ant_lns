@@ -66,6 +66,13 @@ typedef struct {
 
 ////////////// TX SPIS
 
+typedef enum {
+	eMk64fInterrupt       = 1U,
+	eMk64fLeftButton      = 2U,
+	eMk64fCentralButton   = 3U,
+	eMk64fRightButton     = 4U,
+} eMk64fLineToggle;
+
 typedef struct {
 	uint8_t bpm;
 	uint16_t rr;
@@ -120,6 +127,8 @@ extern "C" {
 #endif
 
 void mk64f_parse_rx_info(sSpisRxInfo* output);
+
+void mk64f_toggle_line(eMk64fLineToggle button_action);
 
 #ifdef __cplusplus
 }

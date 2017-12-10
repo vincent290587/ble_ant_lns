@@ -5,12 +5,16 @@
  *      Author: Vincent
  */
 
-#include "glasses.h"
 #include "fec.h"
+#include "glasses.h"
+#include "boards.h"
 #include "nrf_assert.h"
+#include "nrf_delay.h"
 #include "notifications.h"
 #include "mk64f_parser.h"
 #include "backlighting.h"
+
+#define INT_PIN_DELAY_US    100
 
 /**
  *
@@ -37,3 +41,21 @@ void mk64f_parse_rx_info(sSpisRxInfo* input) {
 		break;
 	}
 }
+
+/**
+ *
+ * @param button_action
+ */
+void mk64f_toggle_line(eMk64fLineToggle button_action) {
+
+	for (uint8_t i=0; i < button_action; i++) {
+
+		nrf_gpio_pin_set(INT_PIN);
+		nrf_delay_us(INT_PIN_DELAY_US);
+
+		nrf_gpio_pin_clear(INT_PIN);
+		nrf_delay_us(INT_PIN_DELAY_US);
+	}
+
+}
+

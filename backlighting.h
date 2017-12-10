@@ -16,6 +16,8 @@ extern "C" {
 
 void backlighting_init(void);
 
+void backlighting_tasks(void);
+
 void backlighting_set_control(sBacklightOrders* control);
 
 #ifdef __cplusplus
