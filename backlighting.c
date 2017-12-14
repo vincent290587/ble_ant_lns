@@ -12,6 +12,10 @@
 #include "app_error.h"
 #include "backlighting.h"
 
+#include "nrf_log.h"
+#include "nrf_log_ctrl.h"
+#include "nrf_log_default_backends.h"
+
 APP_TIMER_DEF(m_back_timer);
 
 static uint32_t m_ticks = 0;
@@ -22,14 +26,15 @@ static volatile bool m_timer_is_off = 0;
 static void _backlight_callback(void* p_context) {
 
 	m_timer_is_off = true;
-	nrf_gpio_pin_toggle(LED_PIN);
+	nrf_gpio_pin_toggle(BCK_PIN);
 
 }
 
 
 void backlighting_init(void) {
 
-	nrf_gpio_cfg_output(LED_PIN);
+	nrf_gpio_cfg_output(BCK_PIN);
+	nrf_gpio_pin_clear(BCK_PIN);
 
 	// Create timer.
 	uint32_t err_code = app_timer_create(&m_back_timer, APP_TIMER_MODE_SINGLE_SHOT, _backlight_callback);
@@ -71,11 +76,13 @@ void backlighting_set_control(sBacklightOrders* control) {
 	} else if (control->state) {
 
 		// turn on/off
-		nrf_gpio_pin_set(LED_PIN);
+		NRF_LOG_INFO("Backlighting ON");
+		nrf_gpio_pin_set(BCK_PIN);
 
 	} else {
 
-		nrf_gpio_pin_clear(LED_PIN);
+		NRF_LOG_INFO("Backlighting OFF");
+		nrf_gpio_pin_clear(BCK_PIN);
 
 	}
 

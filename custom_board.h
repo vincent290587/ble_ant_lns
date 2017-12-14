@@ -83,6 +83,7 @@ extern "C" {
 #define LDO_PIN             30
 #define NEO_PIN             7
 #define LED_PIN             14
+#define BCK_PIN             8
 #define AT42_COUT           18
 
 

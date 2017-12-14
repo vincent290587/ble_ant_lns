@@ -173,6 +173,7 @@ int main(void)
 	nrf_delay_ms(500);
 
 	nrf_gpio_pin_set(LDO_PIN);
+	nrf_gpio_cfg_output(LED_PIN);
 
 	// Initialize.
 	log_init();
@@ -212,9 +213,9 @@ int main(void)
 
 			NRF_LOG_DEBUG("Job");
 
-			// TODO job
-			if (notifications_tasks()) {
-			}
+			nrf_gpio_pin_toggle(LED_PIN);
+
+			notifications_tasks();
 		}
 
 		app_sched_execute();
