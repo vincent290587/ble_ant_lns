@@ -167,7 +167,7 @@ float regFenLim(float val_, float b1_i, float b1_f, float b2_i, float b2_f);
  * @param dest
  * @param input
  */
-void encode_uint16 (uint8_t* dest, uint32_t input);
+void encode_uint16 (uint8_t* dest, uint16_t input);
 
 /**
  *

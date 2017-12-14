@@ -10,7 +10,7 @@
 
 #define SPIS_BUFFER_SIZE     64
 
-extern uint8_t m_tx_buf[SPIS_BUFFER_SIZE];
+extern uint8_t* m_tx_buf;
 
 #ifdef __cplusplus
 extern "C" {

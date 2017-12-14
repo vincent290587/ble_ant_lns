@@ -148,9 +148,9 @@
 // <e> ANT_FEC_LOG_ENABLED - Enables general logging in the module.
 //==========================================================
 #ifndef ANT_FEC_LOG_ENABLED
-#define ANT_FEC_LOG_ENABLED 1
+#define ANT_FEC_LOG_ENABLED 0
 #endif
-#if  ANT_FEC_LOG_ENABLED
+//#if  ANT_FEC_LOG_ENABLED
 // <o> ANT_FEC_LOG_LEVEL  - Default Severity level
 
 // <0=> Off
@@ -179,7 +179,7 @@
 #define ANT_FEC_INFO_COLOR 0
 #endif
 
-#endif //ANT_FEC_LOG_ENABLED
+//#endif //ANT_FEC_LOG_ENABLED
 // </e>
 
 // <e> ANT_FEC_COMMON_LOG_ENABLED - Enables logging of FEC tracing common data.
@@ -220,15 +220,15 @@
 // </e>
 
 #ifndef ANT_FEC_PAGE_2_LOG_ENABLED
-#define ANT_FEC_PAGE_2_LOG_ENABLED 1
+#define ANT_FEC_PAGE_2_LOG_ENABLED 0
 #endif
 
 #ifndef ANT_FEC_PAGE_21_LOG_ENABLED
-#define ANT_FEC_PAGE_21_LOG_ENABLED 1
+#define ANT_FEC_PAGE_21_LOG_ENABLED 0
 #endif
 
 #ifndef ANT_FEC_PAGE_25_LOG_ENABLED
-#define ANT_FEC_PAGE_25_LOG_ENABLED 1
+#define ANT_FEC_PAGE_25_LOG_ENABLED 0
 #endif
 
 #ifndef ANT_FEC_PAGE_48_LOG_ENABLED
@@ -244,7 +244,7 @@
 #endif
 
 #ifndef ANT_FEC_PAGE_55_LOG_ENABLED
-#define ANT_FEC_PAGE_55_LOG_ENABLED 1
+#define ANT_FEC_PAGE_55_LOG_ENABLED 0
 #endif
 
 #ifndef ANT_FEC_PAGE_71_LOG_ENABLED

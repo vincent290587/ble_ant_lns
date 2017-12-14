@@ -192,11 +192,12 @@ int main(void)
 
 	buttons_leds_init();
 
-	// init BLE + ANT
-	ble_ant_init();
+	notifications_init(NEO_PIN);
 
 	spis_init();
-	notifications_init(NEO_PIN);
+
+	// init BLE + ANT
+	ble_ant_init();
 
 	err_code = app_timer_create(&m_job_timer, APP_TIMER_MODE_REPEATED, timer_event_handler);
 	APP_ERROR_CHECK(err_code);
