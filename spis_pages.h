@@ -15,6 +15,7 @@
 #define TX_BUFF_FLAGS_LNS_BIT     0U
 #define TX_BUFF_FLAGS_HRM_BIT     1U
 #define TX_BUFF_FLAGS_BSC_BIT     2U
+#define TX_BUFF_FLAGS_FEC_BIT     4U
 
 #define TX_BUFF_FLAGS_SIZE        1U
 #define TX_BUFF_LNS_SIZE          16U
@@ -34,11 +35,13 @@
 #define RX_BUFF_GLA_SIZE          3U
 #define RX_BUFF_NEO_SIZE          5U
 #define RX_BUFF_FEC_SIZE          9U
+#define RX_BUFF_BACK_SIZE         2U
 
 #define RX_BUFF_BAT_START         (RX_BUFF_PAGE_SIZE)
 #define RX_BUFF_GLA_START         (RX_BUFF_BAT_START + RX_BUFF_BAT_SIZE)
 #define RX_BUFF_NEO_START         (RX_BUFF_GLA_START + RX_BUFF_GLA_SIZE)
 #define RX_BUFF_FEC_START         (RX_BUFF_NEO_START + RX_BUFF_NEO_SIZE)
+#define RX_BUFF_BACK_START        (RX_BUFF_FEC_START + RX_BUFF_FEC_SIZE)
 
 #ifdef __cplusplus
 extern "C" {

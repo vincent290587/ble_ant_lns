@@ -10,6 +10,10 @@
 #include "spis_pages.h"
 
 
+#include "nrf_log.h"
+#include "nrf_log_ctrl.h"
+#include "nrf_log_default_backends.h"
+
 /**
  *
  * @param info
@@ -41,8 +45,8 @@ void spis_encode_hrm(sHrmInfo* info) {
 void spis_encode_bsc(sBscInfo* info) {
 	m_tx_buf[TX_BUFF_FLAGS_POS] |= 1 << TX_BUFF_FLAGS_BSC_BIT;
 
-	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START + 0, info->cadence);
-	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START + 4, info->speed);
+	encode_uint32 (m_tx_buf + TX_BUFF_BSC_START + 0, info->cadence);
+	encode_uint32 (m_tx_buf + TX_BUFF_BSC_START + 4, info->speed);
 }
 
 /**
@@ -50,7 +54,7 @@ void spis_encode_bsc(sBscInfo* info) {
  * @param info
  */
 void spis_encode_fec(sFecInfo* info) {
-	m_tx_buf[TX_BUFF_FLAGS_POS] |= 1 << TX_BUFF_FLAGS_BSC_BIT;
+	m_tx_buf[TX_BUFF_FLAGS_POS] |= 1 << TX_BUFF_FLAGS_FEC_BIT;
 
 	encode_uint16 (m_tx_buf + TX_BUFF_FEC_START + 0, info->el_time);
 	encode_uint16 (m_tx_buf + TX_BUFF_FEC_START + 2, info->speed);
@@ -85,6 +89,9 @@ static void spis_decode_page0(uint8_t *rx_buf, sSpisRxInfo *output) {
 		output->pages.page0.fec_info.data.slope_control.slope_ppc = (float)decode_uint32 (rx_buf + RX_BUFF_FEC_START + 1U);
 		output->pages.page0.fec_info.data.slope_control.rolling_resistance = (float)decode_uint32 (rx_buf + RX_BUFF_FEC_START + 5U);
 	}
+
+	output->pages.page0.back_info.freq      = rx_buf[RX_BUFF_BACK_START];
+	output->pages.page0.back_info.state     = rx_buf[RX_BUFF_BACK_START + 1U];
 }
 
 /**
@@ -113,7 +120,14 @@ void spis_decode_rx_page(uint8_t *rx_buf, sSpisRxInfo *output) {
 		break;
 
 	default:
+	{
+		NRF_LOG_WARNING("Unknown SPIS page %u", rx_buf[RX_BUFF_PAGE_POS]);
+		for (uint8_t i = 0; i < 64; i++) {
+			NRF_LOG_RAW_INFO("%02X ", rx_buf[i]);
+		}
+		NRF_LOG_RAW_INFO("\r\n");
 		output->page_id = eSpiRxPageInv;
+	}
 		break;
 	}
 
