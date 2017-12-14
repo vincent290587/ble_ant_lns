@@ -1417,7 +1417,7 @@
 // <1=> LSB first 
 
 #ifndef SPIS_DEFAULT_BIT_ORDER
-#define SPIS_DEFAULT_BIT_ORDER 0
+#define SPIS_DEFAULT_BIT_ORDER 1
 #endif
 
 // <o> SPIS_DEFAULT_DEF - SPIS default DEF character  <0-255> 
@@ -1466,7 +1466,7 @@
 // <i> enabled as well.
 
 #ifndef SPIS_NRF52_ANOMALY_109_WORKAROUND_ENABLED
-#define SPIS_NRF52_ANOMALY_109_WORKAROUND_ENABLED 0
+#define SPIS_NRF52_ANOMALY_109_WORKAROUND_ENABLED 1
 #endif
 
 // </e>

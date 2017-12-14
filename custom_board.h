@@ -67,10 +67,10 @@ extern "C" {
 #define SPIS_MOSI_PIN   27  // SPI MOSI signal.
 #define SPIS_SCK_PIN    25  // SPI SCK signal.
 
-#define SPIM0_SCK_PIN   29  // SPI clock GPIO pin number.
-#define SPIM0_MOSI_PIN  25  // SPI Master Out Slave In GPIO pin number.
-#define SPIM0_MISO_PIN  28  // SPI Master In Slave Out GPIO pin number.
-#define SPIM0_SS_PIN    12  // SPI Slave Select GPIO pin number.
+//#define SPIM0_SCK_PIN   29  // SPI clock GPIO pin number.
+//#define SPIM0_MOSI_PIN  25  // SPI Master Out Slave In GPIO pin number.
+//#define SPIM0_MISO_PIN  28  // SPI Master In Slave Out GPIO pin number.
+//#define SPIM0_SS_PIN    12  // SPI Slave Select GPIO pin number.
 
 // Low frequency clock source to be used by the SoftDevice
 #define NRF_CLOCK_LFCLKSRC      {.source       = NRF_CLOCK_LF_SRC_XTAL,      \

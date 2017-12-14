@@ -195,7 +195,7 @@ int main(void)
 	// init BLE + ANT
 	ble_ant_init();
 
-	//spis_init();
+	spis_init();
 	notifications_init(NEO_PIN);
 
 	err_code = app_timer_create(&m_job_timer, APP_TIMER_MODE_REPEATED, timer_event_handler);
@@ -220,7 +220,7 @@ int main(void)
 
 		app_sched_execute();
 
-		//spis_tasks();
+		spis_tasks();
 
 		backlighting_tasks();
 
