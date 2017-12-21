@@ -64,6 +64,10 @@ typedef struct {
 	uint8_t  freq;
 } sBacklightOrders;
 
+typedef struct {
+	uint8_t  state;
+} sPowerOrders;
+
 ////////////// TX SPIS
 
 typedef enum {
@@ -104,6 +108,7 @@ typedef struct {
 	sNeopixelOrders neo_info;
 	sFecControl     fec_info;
 	sBacklightOrders back_info;
+	sPowerOrders     power_info;
 } sSpisRxInfoPage0;
 
 typedef struct {
@@ -129,6 +134,8 @@ extern "C" {
 void mk64f_parse_rx_info(sSpisRxInfo* output);
 
 void mk64f_toggle_line(eMk64fLineToggle button_action);
+
+void mk64f_power_down_switch(sPowerOrders *power_info);
 
 #ifdef __cplusplus
 }

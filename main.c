@@ -18,6 +18,7 @@
 #include "helper.h"
 #include "bsp.h"
 #include "bsp_btn_ble.h"
+#include "buttons_att.h"
 #include "app_scheduler.h"
 #include "app_timer.h"
 #include "nrf_pwr_mgmt.h"
@@ -162,7 +163,8 @@ int main(void)
 {
 	ret_code_t err_code;
 
-	nrf_gpio_cfg_input(AT42_COUT, NRF_GPIO_PIN_PULLUP);
+
+	nrf_gpio_cfg_input(SHARP_CS, NRF_GPIO_PIN_NOPULL);
 
 	nrf_gpio_cfg_output(LDO_PIN);
 	nrf_gpio_pin_clear(LDO_PIN);
@@ -217,6 +219,8 @@ int main(void)
 			nrf_gpio_pin_toggle(LED_PIN);
 
 			notifications_tasks();
+
+			buttons_att_tasks();
 		}
 
 		app_sched_execute();

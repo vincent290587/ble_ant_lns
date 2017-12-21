@@ -92,6 +92,8 @@ static void spis_decode_page0(uint8_t *rx_buf, sSpisRxInfo *output) {
 
 	output->pages.page0.back_info.freq      = rx_buf[RX_BUFF_BACK_START];
 	output->pages.page0.back_info.state     = rx_buf[RX_BUFF_BACK_START + 1U];
+
+	output->pages.page0.power_info.state    = rx_buf[RX_BUFF_SWITCH_START];
 }
 
 /**

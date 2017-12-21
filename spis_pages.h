@@ -36,12 +36,14 @@
 #define RX_BUFF_NEO_SIZE          5U
 #define RX_BUFF_FEC_SIZE          9U
 #define RX_BUFF_BACK_SIZE         2U
+#define RX_BUFF_SWITCH_SIZE       1U
 
 #define RX_BUFF_BAT_START         (RX_BUFF_PAGE_SIZE)
 #define RX_BUFF_GLA_START         (RX_BUFF_BAT_START + RX_BUFF_BAT_SIZE)
 #define RX_BUFF_NEO_START         (RX_BUFF_GLA_START + RX_BUFF_GLA_SIZE)
 #define RX_BUFF_FEC_START         (RX_BUFF_NEO_START + RX_BUFF_NEO_SIZE)
 #define RX_BUFF_BACK_START        (RX_BUFF_FEC_START + RX_BUFF_FEC_SIZE)
+#define RX_BUFF_SWITCH_START      (RX_BUFF_BACK_START + RX_BUFF_BACK_SIZE)
 
 #ifdef __cplusplus
 extern "C" {
