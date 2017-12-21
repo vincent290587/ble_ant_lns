@@ -49,6 +49,8 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
+#define BLE_DEVICE_NAME             "myStrava"
+
 #define APP_BLE_CONN_CFG_TAG        1                                   /**< A tag identifying the SoftDevice BLE configuration. */
 
 #define APP_BLE_OBSERVER_PRIO       1                                   /**< Application's BLE observer priority. You shouldn't need to modify this value. */
@@ -652,6 +654,15 @@ static void ble_stack_init(void)
 	// radio callback to write to the neopixels right ;-)
 	err_code = ble_radio_notification_init(7, NRF_RADIO_NOTIFICATION_DISTANCE_1740US, ble_radio_callback_handler);
 	APP_ERROR_CHECK(err_code);
+
+	// set name
+	ble_gap_conn_sec_mode_t sec_mode; // Struct to store security parameters
+	BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
+	/*Get this device name*/
+	uint8_t device_name[20];
+	memset(device_name, 0, sizeof(device_name));
+	memcpy(device_name, BLE_DEVICE_NAME, strlen(BLE_DEVICE_NAME));
+	err_code = sd_ble_gap_device_name_set(&sec_mode, device_name, strlen(BLE_DEVICE_NAME));
 }
 
 
