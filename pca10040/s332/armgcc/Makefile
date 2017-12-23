@@ -131,8 +131,8 @@ flash_softdevice:
 	nrfjprog --program $(SDK_ROOT)/components/softdevice/s332/hex/ANT_s332_nrf52_5.0.0.hex -f nrf52 --sectorerase 
 #	nrfjprog --reset -f nrf52
 
-dfu:
-	nrfutil --verbose pkg generate --hw-version 52 --sd-req 0x8e --application-version 1 --application $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex --key-file $(SDK_ROOT)/../../vault/priv.pem s332_ble_ant_lns.zip
+dfu: $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex
+	nrfutil --verbose pkg generate --hw-version 52 --sd-req 0x9b --application-version 1 --application $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex --key-file $(SDK_ROOT)/../vault/priv.pem s332_ble_ant_lns.zip
 	mv s332_ble_ant_lns.zip $(DROPBOX)
 
 SDK_CONFIG_FILE := ../config/sdk_config.h
