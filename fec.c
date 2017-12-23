@@ -13,22 +13,26 @@
 #include "app_timer.h"
 #include "spis_pages.h"
 
-
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
 
-#define FEC_CONTROL_DELAY           APP_TIMER_TICKS(1000)
+#define FEC_CONTROL_DELAY           APP_TIMER_TICKS(1500)
 
 ant_fec_profile_t        m_ant_fec;
+
 sFecControl              m_fec_control;
 
 sFecInfo                 m_fec_spis_info;
 
 APP_TIMER_DEF(m_fec_update);
 
-static bool is_fec_init = 0;
+static bool is_fec_init = false;
+
+static bool is_fec_tx_pending = false;
+
+ant_fec_message_layout_t m_fec_message_payload;
 
 static void roller_manager(void * p_context);
 
@@ -59,8 +63,8 @@ void ant_evt_fec (ant_evt_t * p_ant_evt)
 			if (pusDeviceNumber) {
 				is_fec_init = 1;
 
-//				err_code = app_timer_start(m_fec_update, FEC_CONTROL_DELAY, &m_fec_control);
-//				APP_ERROR_CHECK(err_code);
+				err_code = app_timer_start(m_fec_update, FEC_CONTROL_DELAY, &m_fec_control);
+				APP_ERROR_CHECK(err_code);
 			}
 		}
 		ant_fec_disp_evt_handler(p_ant_evt, &m_ant_fec);
@@ -68,6 +72,10 @@ void ant_evt_fec (ant_evt_t * p_ant_evt)
 	case EVENT_RX_FAIL:
 		break;
 	case EVENT_RX_FAIL_GO_TO_SEARCH:
+		is_fec_init = 0;
+		err_code = app_timer_stop(m_fec_update);
+		APP_ERROR_CHECK(err_code);
+		NRF_LOG_WARNING("ANT FEC EVENT_RX_FAIL_GO_TO_SEARCH");
 		break;
 	case EVENT_RX_SEARCH_TIMEOUT:
 		NRF_LOG_WARNING("ANT FEC EVENT_RX_SEARCH_TIMEOUT");
@@ -75,6 +83,7 @@ void ant_evt_fec (ant_evt_t * p_ant_evt)
 	case EVENT_CHANNEL_CLOSED:
 		NRF_LOG_WARNING("ANT FEC EVENT_CHANNEL_CLOSED");
 		break;
+
 	default:
 		NRF_LOG_WARNING("ANT FEC event %02X", p_ant_evt->event);
 		break;
@@ -102,17 +111,20 @@ void ant_fec_evt_handler(ant_fec_profile_t * p_profile, ant_fec_evt_t event)
 		break;
 
 	case ANT_FEC_PAGE_16_UPDATED:
-		m_fec_spis_info.speed = ant_fec_utils_raw_speed_to_uint16_t(p_profile->page_16.speed);
+	{
 		m_fec_spis_info.el_time = ant_fec_utils_raw_time_to_uint16_t(p_profile->page_16.elapsed_time);
+		m_fec_spis_info.speed   = ant_fec_utils_raw_speed_to_uint16_t(p_profile->page_16.speed);
+
 		spis_encode_fec(&m_fec_spis_info);
-		break;
+	}
+	break;
 
 	case ANT_FEC_PAGE_25_UPDATED:
+	{
 		m_fec_spis_info.power = p_profile->page_25.inst_power;
 		spis_encode_fec(&m_fec_spis_info);
-		// send info to the trainer
-		roller_manager(&m_fec_control);
-		break;
+	}
+	break;
 
 	case ANT_FEC_PAGE_17_UPDATED:
 		/* fall through */
@@ -151,45 +163,56 @@ static void roller_manager(void * p_context) {
 	assert(p_context);
 
 	sFecControl* control = (sFecControl*)p_context;
-	ant_fec_message_layout_t fec_message_payload;
-
-	memset(&fec_message_payload, 0, sizeof(fec_message_payload));
 
 	switch (control->type) {
 	case eFecControlTargetPower:
 	{
-		fec_message_payload.page_number = ANT_FEC_PAGE_49;
+		memset(&m_fec_message_payload, 0, sizeof(m_fec_message_payload));
+		m_fec_message_payload.page_number = ANT_FEC_PAGE_49;
 		ant_fec_page49_data_t page49;
 		page49.target_power = ant_fec_utils_target_power_to_uint16_t(control->data.power_control.target_power_w);
-		ant_fec_page49_encode(fec_message_payload.page_payload, &page49);
+		ant_fec_page49_encode(m_fec_message_payload.page_payload, &page49);
 	}
 	break;
 	case eFecControlSlope:
 	{
-		fec_message_payload.page_number = ANT_FEC_PAGE_51;
+		memset(&m_fec_message_payload, 0, sizeof(m_fec_message_payload));
+		m_fec_message_payload.page_number = ANT_FEC_PAGE_51;
 		ant_fec_page51_data_t page51;
 		page51.grade_slope = ant_fec_utils_slope_to_uint16_t(control->data.slope_control.slope_ppc);
 		page51.roll_res    = ant_fec_utils_rolling_res_to_uint8_t(control->data.slope_control.rolling_resistance);
-		ant_fec_page51_encode(fec_message_payload.page_payload, &page51);
+		ant_fec_page51_encode(m_fec_message_payload.page_payload, &page51);
 	}
 	break;
 	default:
 		break;
 	}
 
-	NRF_LOG_INFO("Transmitting track simulation...");
+	is_fec_tx_pending = true;
 
-	uint8_t is_pending = 0;
-	sd_ant_pending_transmit (m_ant_fec.channel_number, &is_pending);
-	if (!is_pending) {
-		uint32_t err_code = sd_ant_acknowledge_message_tx(m_ant_fec.channel_number,
-				sizeof (fec_message_payload),
-				(uint8_t *) &fec_message_payload);
-		APP_ERROR_CHECK(err_code);
-	} else {
-		NRF_LOG_WARNING("sd_ant_acknowledge_message_tx busy");
+}
+
+void roller_manager_tasks(void) {
+
+	if (is_fec_tx_pending && is_fec_init) {
+
+		uint8_t is_pending = 0;
+		sd_ant_pending_transmit (m_ant_fec.channel_number, &is_pending);
+		if (!is_pending) {
+
+			NRF_LOG_INFO("Transmitting track simulation...");
+
+			uint32_t err_code = sd_ant_acknowledge_message_tx(m_ant_fec.channel_number,
+					sizeof (m_fec_message_payload),
+					(uint8_t *) &m_fec_message_payload);
+			APP_ERROR_CHECK(err_code);
+
+			is_fec_tx_pending = false;
+		} else {
+			NRF_LOG_WARNING("Transmission busy");
+		}
+
 	}
-
 }
 
 
@@ -199,12 +222,18 @@ void fec_init(void) {
 	uint32_t err_code = app_timer_create(&m_fec_update, APP_TIMER_MODE_REPEATED, roller_manager);
 	APP_ERROR_CHECK(err_code);
 
+	memset(&m_fec_message_payload, 0, sizeof(m_fec_message_payload));
+
 	m_fec_control.type = eFecControlTargetPower;
-	m_fec_control.data.power_control.target_power_w = 190;
+	m_fec_control.data.power_control.target_power_w = 120;
+
+	APP_ERROR_CHECK(0x01);
 
 }
 
 void fec_set_control(sFecControl* tbc) {
+
+	NRF_LOG_INFO("FEC control type %u", tbc->type);
 
 	memcpy(&m_fec_control, tbc, sizeof(m_fec_control));
 

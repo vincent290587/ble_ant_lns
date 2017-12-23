@@ -17,6 +17,7 @@
 #include "mk64f_parser.h"
 #include "helper.h"
 #include "bsp.h"
+#include "fec.h"
 #include "bsp_btn_ble.h"
 #include "buttons_att.h"
 #include "app_scheduler.h"
@@ -254,6 +255,8 @@ int main(void)
 			notifications_tasks();
 
 			buttons_att_tasks();
+
+			roller_manager_tasks();
 		}
 
 		app_sched_execute();

@@ -36,6 +36,7 @@ typedef struct {
 } sBatteryOrders;
 
 typedef enum {
+	eFecControlTargetNone,
 	eFecControlTargetPower,
 	eFecControlSlope,
 } eFecControlType;
