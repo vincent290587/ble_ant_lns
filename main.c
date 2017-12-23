@@ -21,6 +21,7 @@
 #include "buttons_att.h"
 #include "app_scheduler.h"
 #include "app_timer.h"
+#include "nrf_sdm.h"
 #include "nrf_pwr_mgmt.h"
 #include "nrf_drv_timer.h"
 #include "nrf_gpio.h"
@@ -70,25 +71,26 @@ void timer_event_handler(void* p_context)
  * @param[in] line_num   Line number of the failing ASSERT call.
  * @param[in] file_name  File name of the failing ASSERT call.
  */
-void app_error_handler(uint32_t error_code, uint32_t line_num, const uint8_t *p_file_name) {
+void assert_nrf_callback(uint16_t line_num, const uint8_t * file_name)
+{
+    assert_info_t assert_info =
+    {
+        .line_num    = line_num,
+        .p_file_name = file_name,
+    };
+    app_error_fault_handler(NRF_FAULT_ID_SDK_ASSERT, 0, (uint32_t)(&assert_info));
 
-	if (error_code == NRF_SUCCESS) return;
+#ifndef DEBUG_NRF
+    NRF_LOG_WARNING("System reset");
+    NVIC_SystemReset();
+#else
+    NRF_BREAKPOINT_COND;
 
-	NRF_LOG_ERROR("Erreur: 0x%x ligne %u file %s !!\n", (unsigned int)error_code, (unsigned int)line_num, (uint32_t) p_file_name);
+    bool loop = true;
+    while (loop) ;
+#endif // DEBUG
 
-}
-
-/**
- *
- * @param error_code
- */
-void app_error_handler_bare(uint32_t error_code) {
-
-	if (error_code == NRF_SUCCESS) return;
-
-	NRF_LOG_ERROR("Erreur bare: 0x%x\n", error_code);
-
-
+    UNUSED_VARIABLE(assert_info);
 }
 
 /**
@@ -97,19 +99,49 @@ void app_error_handler_bare(uint32_t error_code) {
  * @param pc
  * @param info
  */
-void app_error_fault_handler(uint32_t id, uint32_t pc, uint32_t info) {
+void app_error_fault_handler(uint32_t id, uint32_t pc, uint32_t info)
+{
+    NRF_LOG_FLUSH();
+
+    switch (id)
+    {
+#if defined(SOFTDEVICE_PRESENT) && SOFTDEVICE_PRESENT
+        case NRF_FAULT_ID_SD_ASSERT:
+            NRF_LOG_ERROR("SOFTDEVICE: ASSERTION FAILED");
+            break;
+        case NRF_FAULT_ID_APP_MEMACC:
+            NRF_LOG_ERROR("SOFTDEVICE: INVALID MEMORY ACCESS");
+            break;
+#endif
+        case NRF_FAULT_ID_SDK_ASSERT:
+        {
+            assert_info_t * p_info = (assert_info_t *)info;
+            NRF_LOG_ERROR("ASSERTION FAILED at %s:%u",
+                          p_info->p_file_name,
+                          p_info->line_num);
+            break;
+        }
+        case NRF_FAULT_ID_SDK_ERROR:
+        {
+            error_info_t * p_info = (error_info_t *)info;
+            NRF_LOG_ERROR("ERROR %u [%s] at %s:%u",
+                          p_info->err_code,
+                          nrf_strerror_get(p_info->err_code),
+                          p_info->p_file_name,
+                          p_info->line_num);
+            break;
+        }
+        default:
+            NRF_LOG_ERROR("UNKNOWN FAULT at 0x%08X", pc);
+            break;
+    }
+
+#ifdef DEBUG_NRF
+    NRF_BREAKPOINT_COND;
+    // On assert, the system can only recover with a reset.
+#endif
 
 }
-
-/**
- *
- * @param line_num
- * @param p_file_name
- */
-void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name) {
-	app_error_handler(DEAD_BEEF, line_num, p_file_name);
-}
-
 
 /**@brief Function for initializing the nrf log module.
  */
