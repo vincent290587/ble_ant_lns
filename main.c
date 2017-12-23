@@ -214,6 +214,7 @@ int main(void)
 
 	NRF_LOG_INFO("Init start");
 
+	nrf_pwr_mgmt_init();
 	APP_SCHED_INIT(SCHED_MAX_EVENT_DATA_SIZE, SCHED_QUEUE_SIZE);
 
 	// Initialize timer module
@@ -263,7 +264,7 @@ int main(void)
 
 		if (NRF_LOG_PROCESS() == false)
 		{
-			sd_app_evt_wait();
+			nrf_pwr_mgmt_run();
 		}
 
 	}
