@@ -165,7 +165,7 @@ float regFenLim(float val_, float b1_i, float b1_f, float b2_i, float b2_f) {
   return res;
 }
 
-void encode_uint16 (uint8_t* dest, uint32_t input) {
+void encode_uint16 (uint8_t* dest, uint16_t input) {
 	dest[0] = (uint8_t) (input & 0xFF);
 	dest[1] = (uint8_t) ((input & 0xFF00) >> 8);
 }

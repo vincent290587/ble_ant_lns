@@ -1417,7 +1417,7 @@
 // <1=> LSB first 
 
 #ifndef SPIS_DEFAULT_BIT_ORDER
-#define SPIS_DEFAULT_BIT_ORDER 0
+#define SPIS_DEFAULT_BIT_ORDER 1
 #endif
 
 // <o> SPIS_DEFAULT_DEF - SPIS default DEF character  <0-255> 
@@ -2135,7 +2135,7 @@
  
 
 #ifndef APP_TIMER_CONFIG_USE_SCHEDULER
-#define APP_TIMER_CONFIG_USE_SCHEDULER 0
+#define APP_TIMER_CONFIG_USE_SCHEDULER 1
 #endif
 
 // <q> APP_TIMER_WITH_PROFILER  - Enable app_timer profiling
@@ -2801,7 +2801,7 @@
 // <e> NRF_PWR_MGMT_ENABLED - nrf_pwr_mgmt - Power management module
 //==========================================================
 #ifndef NRF_PWR_MGMT_ENABLED
-#define NRF_PWR_MGMT_ENABLED 0
+#define NRF_PWR_MGMT_ENABLED 1
 #endif
 // <e> NRF_PWR_MGMT_CONFIG_DEBUG_PIN_ENABLED - Enables pin debug in the module.
 
