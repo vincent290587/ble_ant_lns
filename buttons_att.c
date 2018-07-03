@@ -23,7 +23,7 @@ static uint16_t m_reverse_counter = 0;
 
 void buttons_att_tasks(void) {
 
-	NRF_LOG_INFO("Buttons: %u %u %u",
+	NRF_LOG_DEBUG("Buttons: %u %u %u",
 			nrf_gpio_pin_read(BUTTON_1),
 			nrf_gpio_pin_read(BUTTON_2),
 			nrf_gpio_pin_read(BUTTON_3));
@@ -51,10 +51,15 @@ void buttons_att_tasks(void) {
 //		err_code = app_timer_stop_all();
 //		APP_ERROR_CHECK(err_code);
 
-//		NRF_LOG_INFO("Going to OFF");
-//		nrf_gpio_pin_set(LED_PIN);
-//		nrf_gpio_pin_clear(LDO_PIN);
-//		nrf_delay_ms(500);
+		NRF_LOG_INFO("Going to OFF");
+		nrf_gpio_pin_set(LED_PIN);
+		nrf_gpio_pin_clear(LDO_PIN);
+
+		while (1) {
+			nrf_delay_ms(1000);
+		}
+
+		//sd_power_system_off();
 	}
 
 }

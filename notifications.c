@@ -1,6 +1,9 @@
 #include <stdbool.h>
 #include "notifications.h"
 
+#include "nrf_log.h"
+#include "nrf_log_ctrl.h"
+#include "nrf_log_default_backends.h"
 
 #define ON_STEPS_NB      5
 #define ON_TICKS_DEFAULT 3
@@ -103,6 +106,11 @@ void notifications_setNotify(sNeopixelOrders* orders) {
 
 	case eNeoEventNotify:
 	{
+		NRF_LOG_INFO("NEO notify %u %u %u",
+				orders->rgb[0],
+				orders->rgb[1],
+				orders->rgb[2]);
+
 		_set_notify(
 				orders->rgb[0],
 				orders->rgb[1],

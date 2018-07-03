@@ -110,7 +110,16 @@ void detachInterrupt(nrf_drv_gpiote_pin_t pin_);
  * @param lsb LSB of the variable
  * @return
  */
-float compute2Complement(uint8_t msb, uint8_t lsb);
+float compute2Complement16_t(uint8_t msb, uint8_t lsb);
+
+/**
+ * @brief Computes the 2 complement of a uint24_t value split in three uint8_t values
+ * @param msb MSB of the variable
+ * @param csb Central byte of the variable
+ * @param lsb LSB of the variable
+ * @return
+ */
+float compute2Complement24_t(uint8_t msb, uint8_t csb, uint8_t lsb);
 
 /** @brief Tests if a char is a digit (ie belongs to '0' to '9')
  *

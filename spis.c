@@ -10,6 +10,7 @@
 #include "nrf_gpio.h"
 #include "boards.h"
 #include "app_error.h"
+#include "nrf_pwr_mgmt.h"
 #include <string.h>
 #include "spis.h"
 #include "spis_pages.h"
@@ -80,6 +81,8 @@ void spis_init(void) {
 void spis_tasks(void) {
 
 	if (spis_xfer_done) {
+
+		nrf_pwr_mgmt_feed();
 
 		// decode info
 		sSpisRxInfo decoded_info;

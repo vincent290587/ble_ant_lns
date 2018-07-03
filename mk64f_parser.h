@@ -89,10 +89,12 @@ typedef struct {
 } sBscInfo;
 
 typedef struct {
-	float lat;
-	float lon;
-	float ele;
+	int32_t lat;
+	int32_t lon;
+	int32_t ele;
+	int16_t speed;
 	uint32_t secj;
+	uint32_t date;
 } sLnsInfo;
 
 typedef struct {

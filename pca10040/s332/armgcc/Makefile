@@ -46,7 +46,7 @@ CFLAGS += -DNRF52_PAN_58
 CFLAGS += -DNRF52_PAN_54
 CFLAGS += -DNRF52_PAN_31
 CFLAGS += -DNRF52_PAN_51
-CFLAGS += -D__HEAP_SIZE=0
+CFLAGS += -D__HEAP_SIZE=256
 CFLAGS += -DBLE_STACK_SUPPORT_REQD
 CFLAGS += -DANT_STACK_SUPPORT_REQD
 CFLAGS += -DNRF52_PAN_15
@@ -57,8 +57,8 @@ CFLAGS += -DNRF52_PAN_55
 CFLAGS += -DS332
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb -mabi=aapcs
-CFLAGS +=  -Wall $(OPT)
-CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
+CFLAGS += -Wall $(OPT)
+CFLAGS += -mfloat-abi=soft
 # keep every function in separate section, this allows linker to discard unused ones
 CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
 CFLAGS += -fno-builtin -fshort-enums -nostdlib -fno-exceptions
@@ -69,7 +69,7 @@ CXXFLAGS += $(OPT) -std=gnu++0x -felide-constructors -fno-exceptions -fno-rtti
 # Assembler flags common to all targets
 ASMFLAGS += -mcpu=cortex-m4
 ASMFLAGS += -mthumb -mabi=aapcs
-ASMFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
+ASMFLAGS += -mfloat-abi=soft
 ASMFLAGS += -DNRF52
 ASMFLAGS += -DNRF52_PAN_36
 ASMFLAGS += -DNRF52_PAN_64
@@ -83,7 +83,7 @@ ASMFLAGS += -DNRF52_PAN_58
 ASMFLAGS += -DNRF52_PAN_54
 ASMFLAGS += -DNRF52_PAN_31
 ASMFLAGS += -DNRF52_PAN_51
-ASMFLAGS += -D__HEAP_SIZE=0
+ASMFLAGS += -D__HEAP_SIZE=256
 ASMFLAGS += -DBLE_STACK_SUPPORT_REQD -DANT_STACK_SUPPORT_REQD
 ASMFLAGS += -DNRF52_PAN_15
 ASMFLAGS += -DNRF_SD_BLE_API_VERSION=5
@@ -96,14 +96,17 @@ ASMFLAGS += -DS332
 LDFLAGS += $(OPT)
 LDFLAGS += -mthumb -mabi=aapcs -L $(TEMPLATE_PATH) -T$(LINKER_SCRIPT)
 LDFLAGS += -mcpu=cortex-m4
-LDFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
+LDFLAGS += -mfloat-abi=soft
 # let linker to dump unused sections
 LDFLAGS += -Wl,--gc-sections
 # use newlib in nano version
-LDFLAGS += --specs=nano.specs -lc -lnosys
+LDFLAGS += --specs=nano.specs
 
+# Add standard libraries at the very end of the linker input, after all objects
+# that may need symbols provided by these libraries.
+LIB_FILES += -lc -lnosys -lm
 
-.PHONY: $(TARGETS) default all clean help flash flash_softdevice
+.PHONY: $(TARGETS) default all clean help flash flashl flash_softdevice
 
 # Default target - first one defined
 default: nrf52832_xxaa
@@ -123,6 +126,12 @@ $(foreach target, $(TARGETS), $(call define_target, $(target)))
 flash: $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex
 	@echo Flashing: $<
 	nrfjprog --program $< -f nrf52 --sectorerase
+	nrfjprog --reset -f nrf52
+	
+# Flash the program
+flashl:
+	@echo Flashing: nrf52832_xxaa.hex
+	nrfjprog --program $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex -f nrf52 --sectorerase
 	nrfjprog --reset -f nrf52
 
 # Flash softdevice

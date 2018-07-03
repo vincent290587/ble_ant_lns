@@ -52,6 +52,7 @@ void ant_evt_fec (ant_evt_t * p_ant_evt)
 	case EVENT_TRANSFER_TX_FAILED:
 		NRF_LOG_WARNING("ANT FEC TX failed");
 		break;
+
 	case EVENT_RX:
 		if (!is_fec_init) {
 			uint16_t pusDeviceNumber = 0;
@@ -172,6 +173,8 @@ static void roller_manager(void * p_context) {
 		ant_fec_page49_data_t page49;
 		page49.target_power = ant_fec_utils_target_power_to_uint16_t(control->data.power_control.target_power_w);
 		ant_fec_page49_encode(m_fec_message_payload.page_payload, &page49);
+
+		is_fec_tx_pending = true;
 	}
 	break;
 	case eFecControlSlope:
@@ -182,13 +185,17 @@ static void roller_manager(void * p_context) {
 		page51.grade_slope = ant_fec_utils_slope_to_uint16_t(control->data.slope_control.slope_ppc);
 		page51.roll_res    = ant_fec_utils_rolling_res_to_uint8_t(control->data.slope_control.rolling_resistance);
 		ant_fec_page51_encode(m_fec_message_payload.page_payload, &page51);
+
+		is_fec_tx_pending = true;
 	}
 	break;
 	default:
+		// no control
+
+		is_fec_tx_pending = false;
 		break;
 	}
 
-	is_fec_tx_pending = true;
 
 }
 
@@ -224,10 +231,8 @@ void fec_init(void) {
 
 	memset(&m_fec_message_payload, 0, sizeof(m_fec_message_payload));
 
-	m_fec_control.type = eFecControlTargetPower;
-	m_fec_control.data.power_control.target_power_w = 120;
-
-	APP_ERROR_CHECK(0x01);
+	m_fec_control.type = eFecControlTargetNone;
+	m_fec_control.data.power_control.target_power_w = 150;
 
 }
 

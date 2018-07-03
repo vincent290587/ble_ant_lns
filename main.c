@@ -25,6 +25,7 @@
 #include "nrf_sdm.h"
 #include "nrf_pwr_mgmt.h"
 #include "nrf_drv_timer.h"
+#include "nrf_drv_wdt.h"
 #include "nrf_gpio.h"
 #include "nrf_delay.h"
 
@@ -45,6 +46,8 @@
 #endif
 
 APP_TIMER_DEF(m_job_timer);
+
+nrf_drv_wdt_channel_id m_channel_id;
 
 extern void ble_ant_init(void);
 
@@ -178,6 +181,40 @@ static void bsp_evt_handler(bsp_event_t evt)
 }
 
 
+/**@brief Handler for shutdown preparation.
+ *
+ * @details During shutdown procedures, this function will be called at a 1 second interval
+ *          untill the function returns true. When the function returns true, it means that the
+ *          app is ready to reset to DFU mode.
+ *
+ * @param[in]   event   Power manager event.
+ *
+ * @retval  True if shutdown is allowed by this power manager handler, otherwise false.
+ */
+static bool app_shutdown_handler(nrf_pwr_mgmt_evt_t event)
+{
+	if (NRF_PWR_MGMT_EVT_PREPARE_SYSOFF == event) {
+		nrf_gpio_pin_clear(LDO_PIN);
+		nrf_gpio_pin_set(LED_PIN);
+		return true;
+	}
+
+	NRF_LOG_INFO("Power management allowed to reset to DFU mode.");
+	return true;
+}
+
+NRF_PWR_MGMT_HANDLER_REGISTER(app_shutdown_handler, 0);
+
+
+/**
+ * @brief WDT events handler.
+ */
+void wdt_event_handler(void)
+{
+    //NOTE: The max amount of time we can spend in WDT interrupt is two cycles of 32768[Hz] clock - after that, reset occurs
+}
+
+
 /**@brief Function for initializing buttons and LEDs.
  *
  * @param[out] p_erase_bonds  True if the clear bonds button was pressed to wake the application up.
@@ -196,6 +233,9 @@ int main(void)
 {
 	ret_code_t err_code;
 
+//	nrf_gpio_cfg_input(BUTTON_1, NRF_GPIO_PIN_PULLUP);
+//	nrf_gpio_cfg_input(BUTTON_2, NRF_GPIO_PIN_PULLUP);
+//	nrf_gpio_cfg_input(BUTTON_3, NRF_GPIO_PIN_PULLUP);
 
 	nrf_gpio_cfg_input(SHARP_CS, NRF_GPIO_PIN_NOPULL);
 
@@ -211,11 +251,20 @@ int main(void)
 	nrf_gpio_cfg_output(LED_PIN);
 
 	// Initialize.
+    //Configure WDT.
+    nrf_drv_wdt_config_t config = NRF_DRV_WDT_DEAFULT_CONFIG;
+    err_code = nrf_drv_wdt_init(&config, wdt_event_handler);
+    APP_ERROR_CHECK(err_code);
+    err_code = nrf_drv_wdt_channel_alloc(&m_channel_id);
+    APP_ERROR_CHECK(err_code);
+    nrf_drv_wdt_enable();
+
 	log_init();
 
 	NRF_LOG_INFO("Init start");
 
 	nrf_pwr_mgmt_init();
+
 	APP_SCHED_INIT(SCHED_MAX_EVENT_DATA_SIZE, SCHED_QUEUE_SIZE);
 
 	// Initialize timer module
@@ -243,6 +292,14 @@ int main(void)
 
 	NRF_LOG_INFO("LNS central start");
 
+	sNeopixelOrders neo_order;
+	neo_order.event_type = eNeoEventNotify;
+	neo_order.on_time = 0;
+	neo_order.rgb[0] = 0xFF;
+	neo_order.rgb[1] = 0x00;
+	neo_order.rgb[2] = 0x00;
+	notifications_setNotify(&neo_order);
+
 	for (;;)
 	{
 		if (job_to_do) {
@@ -250,13 +307,15 @@ int main(void)
 
 			NRF_LOG_DEBUG("Job");
 
-			nrf_gpio_pin_toggle(LED_PIN);
+//			nrf_gpio_pin_toggle(LED_PIN);
 
 			notifications_tasks();
 
 			buttons_att_tasks();
 
 			roller_manager_tasks();
+
+			nrf_drv_wdt_channel_feed(m_channel_id);
 		}
 
 		app_sched_execute();

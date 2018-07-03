@@ -19,7 +19,7 @@
 #include "nrf_log_default_backends.h"
 
 
-#define INT_PIN_DELAY_US    100
+#define INT_PIN_DELAY_US    200
 
 /**
  *

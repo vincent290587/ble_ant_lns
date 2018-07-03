@@ -226,7 +226,7 @@ void ant_evt_hrm (ant_evt_t * p_ant_evt)
 		if (!is_hrm_init) {
 			sd_ant_channel_id_get (HRM_CHANNEL_NUMBER,
 					&pusDeviceNumber, &pucDeviceType, &pucTransmitType);
-//			printf("$ANCS,0,HRM 0x%x connected\n\r", pusDeviceNumber);
+
 			if (pusDeviceNumber) is_hrm_init = 1;
 		}
 		NRF_LOG_INFO("HRM RX\r\n");
@@ -436,7 +436,6 @@ static void ant_hrm_evt_handler(ant_hrm_profile_t * p_profile, ant_hrm_evt_t eve
 
 	hrm_info.bpm = p_profile->page_0.computed_heart_rate;
 
-
 	switch (event)
 	{
 	case ANT_HRM_PAGE_0_UPDATED:
@@ -465,7 +464,7 @@ static void ant_hrm_evt_handler(ant_hrm_profile_t * p_profile, ant_hrm_evt_t eve
 
 			spis_encode_hrm(&hrm_info);
 
-//			printf("$HRM,%u,%u\n\r",
+//			NRF_LOG_INFO("$HRM,%u,%u\n\r",
 //					hrm_info.bpm,
 //					hrm_info.rr);
 
@@ -501,15 +500,6 @@ void ant_timers_init(void)
 
 }
 
-
-/**
- * @brief WDT events handler.
- */
-void wdt_event_handler(void)
-{
-
-}
-
 /**@brief Function for initializing the BLE stack.
  *
  * @details Initializes the SoftDevice and the BLE event interrupt.
@@ -538,7 +528,7 @@ static void ant_profile_setup(void)
 
     // Disable high priority search to minimize disruption to other channels while searching
     ant_search_config.high_priority_timeout = ANT_HIGH_PRIORITY_SEARCH_DISABLE;
-    ant_search_config.low_priority_timeout  = 20;
+    ant_search_config.low_priority_timeout  = 80;
     ant_search_config.search_sharing_cycles = 0x10;
     ant_search_config.search_priority       = ANT_SEARCH_PRIORITY_LOWEST;
 

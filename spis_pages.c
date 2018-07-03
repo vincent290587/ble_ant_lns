@@ -24,7 +24,9 @@ void spis_encode_lns(sLnsInfo* info) {
 	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START +  0, (uint32_t) info->lat);
 	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START +  4, (uint32_t) info->lon);
 	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START +  8, (uint32_t) info->ele);
-	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START + 12, info->secj);
+	encode_uint16 (m_tx_buf + TX_BUFF_LNS_START + 12, (uint16_t) info->speed);
+	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START + 14, info->secj);
+	encode_uint32 (m_tx_buf + TX_BUFF_LNS_START + 18, info->date);
 }
 
 /**

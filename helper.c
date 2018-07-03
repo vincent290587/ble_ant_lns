@@ -103,22 +103,42 @@ void detachInterrupt(nrf_drv_gpiote_pin_t pin_) {
 }
 
 
-float compute2Complement(uint8_t msb, uint8_t lsb) {
+float compute2Complement16_t(uint8_t msb, uint8_t lsb) {
 	uint16_t t;
 	uint16_t val;
 	uint8_t tl=lsb, th=msb;
 	float ret;
 
-	if (th & 0b00100000) {
+	if (th & 0b10000000) {
 		t = th << 8;
 		val = (t & 0xFF00) | (tl & 0x00FF);
 		val -= 1;
-		val = ~(val | 0b1110000000000000);
+		val = ~(val | 0b1000000000000000);
 		//NRF_LOG_INFO("Raw 2c1: %u\r\n", val);
 		ret = (float)val;
 	} else {
 		t = (th & 0xFF) << 8;
 		val = (t & 0xFF00) | (tl & 0x00FF);
+		//NRF_LOG_INFO("Raw 2c2: %u\r\n", val);
+		ret = (float)-val;
+	}
+
+	return ret;
+}
+
+float compute2Complement24_t(uint8_t msb, uint8_t csb, uint8_t lsb) {
+	uint16_t val;
+	uint8_t tl=lsb, tc=csb, th=msb;
+	float ret;
+
+	if (msb & 0b10000000) {
+		val = (th << 16) | (tc << 8) | tl;
+		val -= 1;
+		val = ~(val | 0b100000000000000000000000);
+		//NRF_LOG_INFO("Raw 2c1: %u\r\n", val);
+		ret = (float)val;
+	} else {
+		val = (th << 16) | (tc << 8) | tl;
 		//NRF_LOG_INFO("Raw 2c2: %u\r\n", val);
 		ret = (float)-val;
 	}
@@ -165,7 +185,7 @@ float regFenLim(float val_, float b1_i, float b1_f, float b2_i, float b2_f) {
   return res;
 }
 
-void encode_uint16 (uint8_t* dest, uint32_t input) {
+void encode_uint16 (uint8_t* dest, uint16_t input) {
 	dest[0] = (uint8_t) (input & 0xFF);
 	dest[1] = (uint8_t) ((input & 0xFF00) >> 8);
 }

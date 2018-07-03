@@ -1,6 +1,7 @@
 PROJECT_NAME     := ble_app_lns_c_pca10052_s332
 TARGETS          := nrf52840_xxaa
-OUTPUT_DIRECTORY := _build
+UNAME := $(shell uname)
+OUTPUT_DIRECTORY := _build.$(UNAME)
 
 include Makefile.local
 
@@ -126,10 +127,13 @@ flash_softdevice:
 	nrfjprog --program $(SDK_ROOT)/components/softdevice/s332/hex/ANT_s332_nrf52_5.0.0.hex -f nrf52 --sectorerase 
 #	nrfjprog --reset -f nrf52
 
-dfu:
+dfu: $(OUTPUT_DIRECTORY)/nrf52840_xxaa.hex
 	nrfutil --verbose pkg generate --hw-version 52 --sd-req 0x9b --application-version 1 --application $(OUTPUT_DIRECTORY)/nrf52840_xxaa.hex --key-file $(SDK_ROOT)/vault/priv.pem s332_ble_ant_lns.zip
-	mv s332_ble_ant_lns.zip $(DROPBOX)
+	cp s332_ble_ant_lns.zip $(DROPBOX)
 
+usb: nrf52840_xxaa
+#   sudo chmod 777 /dev/ttyS7
+	nrfutil dfu serial -pkg s332_ble_ant_lns.zip -p /dev/ttyS7
 
 erase:
 	nrfjprog --eraseall -f nrf52

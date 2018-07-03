@@ -739,6 +739,7 @@ static void lns_c_evt_handler(ble_lns_c_t * p_lns_c, ble_lns_c_evt_t * p_lns_c_e
 		lns_info.lat = p_lns_c_evt->params.lns.lat;
 		lns_info.lon = p_lns_c_evt->params.lns.lon;
 		lns_info.ele = 0;
+		lns_info.speed = 0;
 
 		NRF_LOG_INFO("Latitude  = %ld", p_lns_c_evt->params.lns.lat);
 		NRF_LOG_INFO("Longitude = %ld", p_lns_c_evt->params.lns.lon);
@@ -749,8 +750,16 @@ static void lns_c_evt_handler(ble_lns_c_t * p_lns_c, ble_lns_c_evt_t * p_lns_c_e
 		lns_info.secj += p_lns_c_evt->params.lns.utc_time.minutes * 60;
 		lns_info.secj += p_lns_c_evt->params.lns.utc_time.hours * 3600;
 
+		lns_info.date = p_lns_c_evt->params.lns.utc_time.year   % 100;
+		lns_info.date += p_lns_c_evt->params.lns.utc_time.day   * 10000;
+		lns_info.date += p_lns_c_evt->params.lns.utc_time.month * 100;
+
 		if (p_lns_c_evt->params.lns.flags & ELE_PRESENT) {
-			lns_info.ele = (float)p_lns_c_evt->params.lns.ele / 100.;
+			lns_info.ele = p_lns_c_evt->params.lns.ele;
+		}
+
+		if (p_lns_c_evt->params.lns.flags & INST_SPEED_PRESENT) {
+			lns_info.speed = p_lns_c_evt->params.lns.inst_speed;
 		}
 
 		NRF_LOG_INFO("Sec jour = %d %d %d\r\n", p_lns_c_evt->params.lns.utc_time.hours,
