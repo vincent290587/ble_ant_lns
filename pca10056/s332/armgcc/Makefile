@@ -10,7 +10,7 @@ PROJ_DIR := ../../..
 $(OUTPUT_DIRECTORY)/nrf52840_xxaa.out: \
   LINKER_SCRIPT  := ble_app_lns_c_gcc_nrf52.ld
 
-include $(PROJ_DIR)/makefile.files
+include $(PROJ_DIR)/Makefile.files
 
 # Source files common to all targets
 SRC_FILES += \
@@ -52,25 +52,27 @@ CFLAGS += -DNRF52_PAN_55
 CFLAGS += -DS332
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb -mabi=aapcs
-CFLAGS +=  -Wall 
+CFLAGS +=  -Wall $(OPT)
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # keep every function in separate section, this allows linker to discard unused ones
 CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
-CFLAGS += -fno-builtin -fshort-enums 
+CFLAGS += -fno-builtin -fshort-enums -nostdlib -fno-exceptions
 
 # C++ flags common to all targets
-CXXFLAGS += $(OPT)
+CXXFLAGS += $(OPT) -std=gnu++0x -felide-constructors -fno-exceptions -fno-rtti
 
 # Assembler flags common to all targets
 ASMFLAGS += -mcpu=cortex-m4
 ASMFLAGS += -mthumb -mabi=aapcs
 ASMFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
+ASMFLAGS += -DNRF52
 ASMFLAGS += -DNRF52_PAN_36
 ASMFLAGS += -DNRF52_PAN_64
 ASMFLAGS += -DSOFTDEVICE_PRESENT
-ASMFLAGS += -DBOARD_STRAVA5
-ASMFLAGS += -DNRF52840
-ASMFLAGS += -DNRF52840_XXAA
+ASMFLAGS += -DFLOAT_ABI_HARD
+ASMFLAGS += -DBOARD_CUSTOM
+ASMFLAGS += -DNRF52832
+ASMFLAGS += -DNRF52832_XXAA
 ASMFLAGS += -DNRF52_PAN_12
 ASMFLAGS += -DNRF52_PAN_58
 ASMFLAGS += -DNRF52_PAN_54
@@ -93,7 +95,7 @@ LDFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # let linker to dump unused sections
 LDFLAGS += -Wl,--gc-sections
 # use newlib in nano version
-LDFLAGS += --specs=nano.specs
+LDFLAGS += --specs=nano.specs -lc -lnosys
 
 # Add standard libraries at the very end of the linker input, after all objects
 # that may need symbols provided by these libraries.
