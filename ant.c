@@ -35,34 +35,36 @@
 #include "nrf.h"
 #include "app_error.h"
 #include "app_scheduler.h"
-#include "app_timer_appsh.h"
 #include "app_uart.h"
 #include "nrf_soc.h"
-#include "bsp.h"
-#include "bsp_btn_ble.h"
-#include "softdevice_handler.h"
 #include "nrf_delay.h"
-
+#include "app_timer.h"
 #include "nrf_drv_wdt.h"
 
 #include "ant_stack_config.h"
 #include "ant_key_manager.h"
+#include "ant_search_config.h"
 #include "ant_hrm.h"
 #include "ant_bsc.h"
+#include "ant_fec.h"
 #include "ant_glasses.h"
 #include "ant_interface.h"
 
-#include "serial_handling.h"
+#include "spis_pages.h"
+#include "glasses.h"
+#include "fec.h"
 
-#define NRF_LOG_MODULE_NAME "M_ANT"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
+#include "nrf_log_default_backends.h"
 
 
 #define GPIO_BUTTON                     30
 
-#define ANT_DELAY                       APP_TIMER_TICKS(10000, APP_TIMER_PRESCALER)
+#define ANT_DELAY                       APP_TIMER_TICKS(30000)
 
+
+#define APP_ANT_OBSERVER_PRIO       1                                                               /**< Application's ANT observer priority. You shouldn't need to modify this value. */
 
 
 /** @snippet [ANT BSC RX Instance] */
@@ -77,21 +79,6 @@
 #define CADENCE_COEFFICIENT         (BSC_EVT_TIME_FACTOR * BSC_RPM_TIME_FACTOR)                     /**< Coefficient for cadence value calculation */
 #define SPEED_COEFFICIENT           (WHEEL_CIRCUMFERENCE * BSC_EVT_TIME_FACTOR * BSC_MS_TO_KPH_NUM \
                                      / BSC_MS_TO_KPH_DEN)                      /**< Coefficient for speed value calculation */
-
-
-#define WILDCARD_TRANSMISSION_TYPE      0x00
-#define ANTPLUS_NETWORK_NUMBER          0x00                                           /**< Network number. */
-
-#define HRM_CHANNEL_NUMBER              0x00  
-#define HRM_DEVICE_NUMBER               0x0D22    /**< Device Number. */
-
-#define BSC_CHANNEL_NUMBER              0x01     
-#define BSC_DEVICE_NUMBER               0xB02B    /**< Device Number. */    
-#define BSC_DEVICE_TYPE                 0x79
-
-#define GLASSES_CHANNEL_NUMBER          0x02                                            /**< Default ANT Channel. */
-
-#define ANTPLUS_NETWORK_NUMBER          0x00                                           /**< Network number. */
 
 
 APP_TIMER_DEF(m_sec_hrm);
@@ -114,8 +101,6 @@ BSC_DISP_CHANNEL_CONFIG_DEF(m_ant_bsc,
 BSC_DISP_PROFILE_CONFIG_DEF(m_ant_bsc, ant_bsc_evt_handler);
 ant_bsc_profile_t m_ant_bsc;
 
-
-
 /** @snippet [ANT HRM RX Instance] */
 HRM_DISP_CHANNEL_CONFIG_DEF(m_ant_hrm,
 		HRM_CHANNEL_NUMBER,
@@ -125,11 +110,16 @@ HRM_DISP_CHANNEL_CONFIG_DEF(m_ant_hrm,
 		HRM_MSG_PERIOD_4Hz);
 ant_hrm_profile_t           m_ant_hrm;
 
+FEC_DISP_CHANNEL_CONFIG_DEF(m_ant_fec,
+		FEC_CHANNEL_NUMBER,
+		WILDCARD_TRANSMISSION_TYPE,
+		TACX_DEVICE_NUMBER,
+		ANTPLUS_NETWORK_NUMBER);
+FEC_DISP_PROFILE_CONFIG_DEF(m_ant_fec,
+		ant_fec_evt_handler);
 
 
-// glasses profile
-ant_glasses_profile_t       m_ant_glasses;
-const ant_channel_config_t  ant_tx_channel_config  = GLASSES_TX_CHANNEL_CONFIG(GLASSES_CHANNEL_NUMBER,
+const ant_channel_config_t  ant_glasses_channel_config  = GLASSES_TX_CHANNEL_CONFIG(GLASSES_CHANNEL_NUMBER,
 		                            GLASSES_DEVICE_NUMBER, ANTPLUS_NETWORK_NUMBER);
 
 
@@ -149,7 +139,6 @@ static bsc_disp_calc_data_t m_cadence_calc_data = {0};
 
 static uint8_t is_hrm_init = 0;
 static uint8_t is_cad_init = 0;
-
 
 
 /**
@@ -193,14 +182,21 @@ void ant_evt_bsc (ant_evt_t * p_ant_evt)
 		if (!is_cad_init) {
 			sd_ant_channel_id_get (BSC_CHANNEL_NUMBER,
 					&pusDeviceNumber, &pucDeviceType, &pucTransmitType);
-			printf("$ANCS,0,CAD 0x%x connected\n\r", pusDeviceNumber);
-			if (pusDeviceNumber) is_cad_init = 1;
+//			printf("$ANCS,0,CAD 0x%x connected\n\r", pusDeviceNumber);
+			if (pusDeviceNumber) {
+				is_cad_init = 1;
+
+	            memset(&m_speed_calc_data, 0, sizeof(m_speed_calc_data));
+	            memset(&m_cadence_calc_data, 0, sizeof(m_cadence_calc_data));
+			}
 		}
-		ant_bsc_disp_evt_handler(&m_ant_bsc, p_ant_evt);
+		ant_bsc_disp_evt_handler(p_ant_evt, &m_ant_bsc);
 		break;
 	case EVENT_RX_FAIL:
 		break;
 	case EVENT_RX_FAIL_GO_TO_SEARCH:
+        memset(&m_speed_calc_data, 0, sizeof(m_speed_calc_data));
+        memset(&m_cadence_calc_data, 0, sizeof(m_cadence_calc_data));
 		break;
 	case EVENT_RX_SEARCH_TIMEOUT:
 		break;
@@ -230,11 +226,11 @@ void ant_evt_hrm (ant_evt_t * p_ant_evt)
 		if (!is_hrm_init) {
 			sd_ant_channel_id_get (HRM_CHANNEL_NUMBER,
 					&pusDeviceNumber, &pucDeviceType, &pucTransmitType);
-			printf("$ANCS,0,HRM 0x%x connected\n\r", pusDeviceNumber);
+
 			if (pusDeviceNumber) is_hrm_init = 1;
 		}
-		ant_hrm_disp_evt_handler(&m_ant_hrm, p_ant_evt);
 		NRF_LOG_INFO("HRM RX\r\n");
+		ant_hrm_disp_evt_handler(p_ant_evt, &m_ant_hrm);
 		break;
 	case EVENT_RX_FAIL:
 		break;
@@ -260,7 +256,7 @@ void ant_evt_hrm (ant_evt_t * p_ant_evt)
  *
  * @param[in] p_ant_evt  ANT stack event.
  */
-void ant_evt_dispatch(ant_evt_t * p_ant_evt)
+void ant_evt_handler(ant_evt_t * p_ant_evt, void * p_context)
 {
 
 	switch(p_ant_evt->channel) {
@@ -276,16 +272,21 @@ void ant_evt_dispatch(ant_evt_t * p_ant_evt)
 		ant_evt_glasses (p_ant_evt);
 		break;
 
+	case FEC_CHANNEL_NUMBER:
+		ant_evt_fec (p_ant_evt);
+		break;
+
 	default:
 		break;
 	}
 
 }
+NRF_SDH_ANT_OBSERVER(m_ant_observer, APP_ANT_OBSERVER_PRIO, ant_evt_handler, 0);
 
 /**
  *
  */
-__STATIC_INLINE uint32_t calculate_speed(int32_t rev_cnt, int32_t evt_time)
+static uint32_t calculate_speed(int32_t rev_cnt, int32_t evt_time)
 {
     static uint32_t computed_speed   = 0;
 
@@ -293,8 +294,6 @@ __STATIC_INLINE uint32_t calculate_speed(int32_t rev_cnt, int32_t evt_time)
     {
         m_speed_calc_data.acc_rev_cnt  += rev_cnt - m_speed_calc_data.prev_rev_cnt;
         m_speed_calc_data.acc_evt_time += evt_time - m_speed_calc_data.prev_evt_time;
-
-        NRF_LOG_INFO("acc_rev_cnt %lu prev_rev_cnt %lu\n", m_speed_calc_data.acc_rev_cnt, m_speed_calc_data.prev_rev_cnt);
 
         /* Process rollover */
         if (m_speed_calc_data.prev_rev_cnt > rev_cnt)
@@ -317,7 +316,7 @@ __STATIC_INLINE uint32_t calculate_speed(int32_t rev_cnt, int32_t evt_time)
         m_speed_calc_data.prev_acc_evt_time = m_speed_calc_data.acc_evt_time;
     }
 
-    return (uint32_t) (computed_speed);
+    return (uint32_t)computed_speed;
 }
 
 static uint32_t calculate_cadence(int32_t rev_cnt, int32_t evt_time)
@@ -350,7 +349,7 @@ static uint32_t calculate_cadence(int32_t rev_cnt, int32_t evt_time)
         m_cadence_calc_data.prev_acc_evt_time = m_cadence_calc_data.acc_evt_time;
     }
 
-    return (uint32_t) computed_cadence;
+    return (uint32_t)computed_cadence;
 }
 
 /**
@@ -360,12 +359,11 @@ void ant_evt_glasses (ant_evt_t * p_ant_evt)
 {
 	uint32_t err_code = NRF_SUCCESS;
 
-	uint8_t *glasses_payload = get_glasses_payload();
-
 	switch (p_ant_evt->event)
 	{
 	case EVENT_TX:
-		ant_glasses_tx_evt_handle(&m_ant_glasses, p_ant_evt, glasses_payload);
+		NRF_LOG_DEBUG("Sending glasses payload");
+		ant_glasses_tx_evt_handle(&m_ant_glasses, p_ant_evt, m_glasses_payload);
 		break;
 	case EVENT_RX:
 		break;
@@ -386,10 +384,6 @@ void ant_evt_glasses (ant_evt_t * p_ant_evt)
  */
 void ant_bsc_evt_handler(ant_bsc_profile_t * p_profile, ant_bsc_evt_t event)
 {
-	uint32_t _cadence;
-	uint32_t _speed;
-
-
 	switch (event)
 	{
 	case ANT_BSC_PAGE_0_UPDATED:
@@ -407,15 +401,18 @@ void ant_bsc_evt_handler(ant_bsc_profile_t * p_profile, ant_bsc_evt_t event)
 		break;
 
 	case ANT_BSC_COMB_PAGE_0_UPDATED:
+	{
+		sBscInfo bsc_info;
+		bsc_info.speed = calculate_speed(p_profile->BSC_PROFILE_speed_rev_count, p_profile->BSC_PROFILE_speed_event_time);
+		bsc_info.cadence = calculate_cadence(p_profile->BSC_PROFILE_cadence_rev_count, p_profile->BSC_PROFILE_cadence_event_time);
 
-		_speed = calculate_speed(p_profile->BSC_PROFILE_speed_rev_count, p_profile->BSC_PROFILE_speed_event_time);
+		spis_encode_bsc(&bsc_info);
 
-		_cadence = calculate_cadence(p_profile->BSC_PROFILE_cadence_rev_count, p_profile->BSC_PROFILE_cadence_event_time);
+		//printf("$CAD,%lu,%lu\n\r", bsc_info.cadence, bsc_info.speed);
 
-		printf("$CAD,%lu,%lu\n\r", _cadence, _speed);
-
-		NRF_LOG_INFO("Evenement BSC speed=%lu cad=%lu\n", _speed, _cadence);
-
+		NRF_LOG_INFO("Evenement BSC speed=%lu cad=%lu\n",
+				bsc_info.cadence, bsc_info.speed);
+	}
 		break;
 
 	default:
@@ -432,16 +429,19 @@ void ant_bsc_evt_handler(ant_bsc_profile_t * p_profile, ant_bsc_evt_t event)
  */
 static void ant_hrm_evt_handler(ant_hrm_profile_t * p_profile, ant_hrm_evt_t event)
 {
+	sHrmInfo hrm_info;
 	static uint32_t     s_previous_beat_count  = 0;    // Heart beat count from previously received page
 	uint16_t            beat_time              = p_profile->page_0.beat_time;
 	uint32_t            beat_count             = p_profile->page_0.beat_count;
-	uint32_t            computed_heart_rate    = p_profile->page_0.computed_heart_rate;
-	uint16_t rrInterval;
-	uint16_t rrInterval_ms;
+
+	hrm_info.bpm = p_profile->page_0.computed_heart_rate;
 
 	switch (event)
 	{
 	case ANT_HRM_PAGE_0_UPDATED:
+
+		hrm_info.bpm = p_profile->page_0.computed_heart_rate;
+
 		/* fall through */
 	case ANT_HRM_PAGE_1_UPDATED:
 		/* fall through */
@@ -449,25 +449,28 @@ static void ant_hrm_evt_handler(ant_hrm_profile_t * p_profile, ant_hrm_evt_t eve
 		/* fall through */
 	case ANT_HRM_PAGE_3_UPDATED:
 		break;
+
 	case ANT_HRM_PAGE_4_UPDATED:
 
-		NRF_LOG_INFO( "Evenement HR BPM=%u\n", (unsigned int)computed_heart_rate);
+		NRF_LOG_INFO( "Evenement HR BPM=%u\n", hrm_info.bpm);
 
 		// Ensure that there is only one beat between time intervals.
 		if ((beat_count - s_previous_beat_count) == 1)
 		{
 			uint16_t prev_beat = p_profile->page_4.prev_beat;
+			uint16_t rrInterval = (beat_time - prev_beat);
 
-			rrInterval = (beat_time - prev_beat);
-			rrInterval_ms = rrInterval * 1000. / 1024.;
+			hrm_info.rr = rrInterval * 1000. / 1024.;
 
-			printf("$HRM,%u,%u\n\r",
-					(unsigned int)computed_heart_rate,
-					(unsigned int)rrInterval_ms);
+			spis_encode_hrm(&hrm_info);
+
+//			NRF_LOG_INFO("$HRM,%u,%u\n\r",
+//					hrm_info.bpm,
+//					hrm_info.rr);
 
 			// Subtracting the event time gives the R-R interval
 			//ble_hrs_rr_interval_add(&m_hrs, beat_time - prev_beat);
-			NRF_LOG_INFO( "Evenement HR RR=%u\n", (unsigned int)rrInterval_ms);
+			NRF_LOG_INFO( "Evenement HR RR=%u\n", hrm_info.rr);
 
 		}
 
@@ -481,9 +484,6 @@ static void ant_hrm_evt_handler(ant_hrm_profile_t * p_profile, ant_hrm_evt_t eve
 
 }
 
-
-
-
 /**@brief Function for initializing the timer module.
  */
 void ant_timers_init(void)
@@ -496,36 +496,7 @@ void ant_timers_init(void)
 	err_code = app_timer_create(&m_sec_bsc, APP_TIMER_MODE_SINGLE_SHOT, bsc_connect);
 	APP_ERROR_CHECK(err_code);
 
-}
-
-/**@brief Function for handling bsp events.
- */
-void bsp_evt_handler(bsp_event_t evt)
-{
-
-	switch (evt)
-	{
-	case BSP_EVENT_KEY_0:
-		printf("$BTN,0\n\r");
-		break;
-	case BSP_EVENT_KEY_1:
-		printf("$BTN,1\n\r");
-		break;
-	case BSP_EVENT_KEY_2:
-		printf("$BTN,2\n\r");
-		break;
-	default:
-		return; // no implementation needed
-	}
-
-}
-
-
-/**
- * @brief WDT events handler.
- */
-void wdt_event_handler(void)
-{
+	fec_init();
 
 }
 
@@ -535,12 +506,9 @@ void wdt_event_handler(void)
  */
 void ant_stack_init(void)
 {
-	uint32_t err_code;
+	ret_code_t err_code;
 
-	err_code = softdevice_ant_evt_handler_set(ant_evt_dispatch);
-	APP_ERROR_CHECK(err_code);
-
-	err_code = ant_stack_static_config();
+	err_code = nrf_sdh_ant_enable();
 	APP_ERROR_CHECK(err_code);
 
 	err_code = ant_plus_key_set(ANTPLUS_NETWORK_NUMBER);
@@ -556,6 +524,13 @@ static void ant_profile_setup(void)
 {
 	/** @snippet [ANT HRM RX Profile Setup] */
 	uint32_t err_code;
+    ant_search_config_t ant_search_config   = DEFAULT_ANT_SEARCH_CONFIG(0);
+
+    // Disable high priority search to minimize disruption to other channels while searching
+    ant_search_config.high_priority_timeout = ANT_HIGH_PRIORITY_SEARCH_DISABLE;
+    ant_search_config.low_priority_timeout  = 80;
+    ant_search_config.search_sharing_cycles = 0x10;
+    ant_search_config.search_priority       = ANT_SEARCH_PRIORITY_LOWEST;
 
 	// HRM
 	err_code = ant_hrm_disp_init(&m_ant_hrm,
@@ -563,9 +538,9 @@ static void ant_profile_setup(void)
 			ant_hrm_evt_handler);
 	APP_ERROR_CHECK(err_code);
 
-	err_code = ant_hrm_disp_open(&m_ant_hrm);
-	APP_ERROR_CHECK(err_code);
-
+	ant_search_config.channel_number = HRM_CHANNEL_NUMBER;
+    err_code = ant_search_init(&ant_search_config);
+    APP_ERROR_CHECK(err_code);
 
 	// CAD
 	err_code = ant_bsc_disp_init(&m_ant_bsc,
@@ -573,54 +548,54 @@ static void ant_profile_setup(void)
 			BSC_DISP_PROFILE_CONFIG(m_ant_bsc));
 	APP_ERROR_CHECK(err_code);
 
+	ant_search_config.channel_number = BSC_CHANNEL_NUMBER;
+    err_code = ant_search_init(&ant_search_config);
+    APP_ERROR_CHECK(err_code);
+
+
+	// GLASSES
+	err_code = ant_glasses_init(&m_ant_glasses, &ant_glasses_channel_config);
+	APP_ERROR_CHECK(err_code);
+
+	ant_search_config.channel_number = GLASSES_CHANNEL_NUMBER;
+    err_code = ant_search_init(&ant_search_config);
+    APP_ERROR_CHECK(err_code);
+
+	//FEC
+	err_code = ant_fec_disp_init(&m_ant_fec,
+			FEC_DISP_CHANNEL_CONFIG(m_ant_fec),
+			FEC_DISP_PROFILE_CONFIG(m_ant_fec));
+	APP_ERROR_CHECK(err_code);
+
+	ant_search_config.channel_number = FEC_CHANNEL_NUMBER;
+    err_code = ant_search_init(&ant_search_config);
+    APP_ERROR_CHECK(err_code);
+
+    // Open the ANT channels
+
+	err_code = ant_hrm_disp_open(&m_ant_hrm);
+	APP_ERROR_CHECK(err_code);
+
 	err_code = ant_bsc_disp_open(&m_ant_bsc);
 	APP_ERROR_CHECK(err_code);
 
-	// GLASSES
-	err_code = ant_glasses_init(&m_ant_glasses, &ant_tx_channel_config);
+	err_code = ant_fec_disp_open(&m_ant_fec);
 	APP_ERROR_CHECK(err_code);
 
-	err_code = ant_glasses_open(&m_ant_glasses);
-	APP_ERROR_CHECK(err_code);
-
-	/** @snippet [ANT HRM RX Profile Setup] */
-}
-
-
-
-/**@brief Function for initializing buttons and LEDs.
- *
- * @param[out] p_erase_bonds  True if the clear bonds button was pressed to wake the application up.
- */
-static void buttons_leds_init(void)
-{
-	//nrf_gpio_cfg_output(GPIO_BUTTON);
-	// pin to ground
-	//nrf_gpio_pin_clear(GPIO_BUTTON);
-
-	uint32_t err_code = bsp_init(BSP_INIT_BUTTONS,
-			APP_TIMER_TICKS(100, APP_TIMER_PRESCALER),
-			bsp_evt_handler);
-
-	APP_ERROR_CHECK(err_code);
+//	err_code = ant_glasses_open(&m_ant_glasses);
+//	APP_ERROR_CHECK(err_code);
 
 }
-
 
 
 /**@brief Function for application main entry.
  */
 int ant_setup_start(void)
 {
-	buttons_leds_init();
-
 	ant_profile_setup();
 
 	return 0;
 }
 
 
-/**
- * @}
- */
 

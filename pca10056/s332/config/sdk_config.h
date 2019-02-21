@@ -1955,7 +1955,20 @@
 
 // </e>
 
+// <e> UART1_ENABLED - Enable UART1 instance
+//==========================================================
+#ifndef UART1_ENABLED
+#define UART1_ENABLED 0
+#endif
+// <q> UART1_CONFIG_USE_EASY_DMA  - Default setting for using EasyDMA
+ 
+
+#ifndef UART1_CONFIG_USE_EASY_DMA
+#define UART1_CONFIG_USE_EASY_DMA 1
+#endif
+
 // </e>
+
 
 // <e> USBD_ENABLED - nrf_drv_usbd - USB driver
 //==========================================================
@@ -2122,7 +2135,7 @@
  
 
 #ifndef APP_TIMER_CONFIG_USE_SCHEDULER
-#define APP_TIMER_CONFIG_USE_SCHEDULER 0
+#define APP_TIMER_CONFIG_USE_SCHEDULER 1
 #endif
 
 // <q> APP_TIMER_WITH_PROFILER  - Enable app_timer profiling
